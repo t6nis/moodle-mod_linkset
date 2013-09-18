@@ -18,15 +18,15 @@
 /**
  * Backup functionality
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . '/mod/linkmgr/backup/moodle2/backup_linkmgr_stepslib.php'); // Because it exists (must)
-require_once($CFG->dirroot . '/mod/linkmgr/backup/moodle2/backup_linkmgr_settingslib.php'); // Because it exists (optional)
+require_once($CFG->dirroot . '/mod/linkset/backup/moodle2/backup_linkset_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/linkset/backup/moodle2/backup_linkset_settingslib.php'); // Because it exists (optional)
 
-class backup_linkmgr_activity_task extends backup_activity_task {
+class backup_linkset_activity_task extends backup_activity_task {
  
     /**
      * Define (add) particular settings this activity can have
@@ -39,7 +39,7 @@ class backup_linkmgr_activity_task extends backup_activity_task {
      * Define (add) particular steps this activity can have
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_linkmgr_activity_structure_step('linkmgr_structure', 'linkmgr.xml'));
+        $this->add_step(new backup_linkset_activity_structure_step('linkset_structure', 'linkset.xml'));
     }
  
     /**
@@ -51,11 +51,11 @@ class backup_linkmgr_activity_task extends backup_activity_task {
  
         $base = preg_quote($CFG->wwwroot,"/");
 
-        $search="/(".$base."\/mod\/linkmgr\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@linkmgrINDEX*$1@$', $content);
+        $search="/(".$base."\/mod\/linkset\/index.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@linksetINDEX*$1@$', $content);
  
-        $search="/(".$base."\/mod\/linkmgr\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@linkmgrVIEWBYID*$1@$', $content);
+        $search="/(".$base."\/mod\/linkset\/view.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@linksetVIEWBYID*$1@$', $content);
  
         return $content;
     }

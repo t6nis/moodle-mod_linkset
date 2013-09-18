@@ -16,16 +16,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkmgr version file
+ * linkset version file
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2013091304;               // If version == 0 then module will not be installed
+$module->version   = 2013091800;               // If version == 0 then module will not be installed
 $module->requires  = 2010031900;      // Requires this Moodle version
 $module->cron      = 0;               // Period for cron to check this module (secs)
-$module->component = 'mod_linkmgr'; // To check on upgrade, that module sits in correct place
+$module->component = 'mod_linkset'; // To check on upgrade, that module sits in correct place

@@ -18,16 +18,16 @@
 /**
  * Restore functionality
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/linkmgr/backup/moodle2/restore_linkmgr_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/linkset/backup/moodle2/restore_linkset_stepslib.php'); // Because it exists (must)
 
-class restore_linkmgr_activity_task extends restore_activity_task {
+class restore_linkset_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have
@@ -40,7 +40,7 @@ class restore_linkmgr_activity_task extends restore_activity_task {
      * Define (add) particular steps this activity can have
      */
     protected function define_my_steps() {
-        $this->add_step(new restore_linkmgr_activity_structure_step('linkmgr_structure', 'linkmgr.xml'));
+        $this->add_step(new restore_linkset_activity_structure_step('linkset_structure', 'linkset.xml'));
     }
 
     /**
@@ -50,8 +50,8 @@ class restore_linkmgr_activity_task extends restore_activity_task {
     static public function define_decode_contents() {
         $contents = array();
 
-        $contents[] = new restore_decode_content('linkmgr', array('intro'), 'linkmgr');
-        $contents[] = new restore_decode_content('linkmgr_link_data', array('value'));
+        $contents[] = new restore_decode_content('linkset', array('intro'), 'linkset');
+        $contents[] = new restore_decode_content('linkset_link_data', array('value'));
         
         return $contents;
     }
@@ -63,8 +63,8 @@ class restore_linkmgr_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('linkmgrINDEX', '/mod/linkmgr/index.php?id=$1', 'course');
-        $rules[] = new restore_decode_rule('linkmgrVIEWBYID', '/mod/linkmgr/view.php?id=$1', 'course_module');        
+        $rules[] = new restore_decode_rule('LINKSETINDEX', '/mod/linkset/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('LINKSETVIEWBYID', '/mod/linkset/view.php?id=$1', 'course_module');        
         
         return $rules;
 
@@ -79,9 +79,9 @@ class restore_linkmgr_activity_task extends restore_activity_task {
     static public function define_restore_log_rules() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('linkmgr', 'add', 'view.php?id={course_module}', '{linkmgr}');
-        $rules[] = new restore_log_rule('linkmgr', 'edit', 'edit.php?id={course_module}', '{linkmgr}');
-        $rules[] = new restore_log_rule('linkmgr', 'view', 'view.php?id={course_module}', '{linkmgr}');
+        $rules[] = new restore_log_rule('linkset', 'add', 'view.php?id={course_module}', '{linkset}');
+        $rules[] = new restore_log_rule('linkset', 'edit', 'edit.php?id={course_module}', '{linkset}');
+        $rules[] = new restore_log_rule('linkset', 'view', 'view.php?id={course_module}', '{linkset}');
 
         return $rules;
     }
@@ -99,7 +99,7 @@ class restore_linkmgr_activity_task extends restore_activity_task {
     static public function define_restore_log_rules_for_course() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('linkmgr', 'view all', 'index.php?id={course}', null);
+        $rules[] = new restore_log_rule('linkset', 'view all', 'index.php?id={course}', null);
 
         return $rules;
     }
@@ -115,26 +115,26 @@ class restore_linkmgr_activity_task extends restore_activity_task {
         //init file storage
         $fs = get_file_storage();
         
-        $cm = get_coursemodule_from_instance('linkmgr', $id);
+        $cm = get_coursemodule_from_instance('linkset', $id);
 
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
         
         //get all related links
-        $links = $DB->get_records('linkmgr_links', array('linkmgrid' => $id), '', 'id');
+        $links = $DB->get_records('linkset_links', array('linksetid' => $id), '', 'id');
 
         foreach ($links as $value) {
   
-            $linkurl = $DB->get_record_select('linkmgr_link_data', 'linkid = '.$value->id.' AND name = \'linkurl\'');
-            //if linkmgr to an internal moodle file, update contextid and hash else no.
-            if (stristr($linkurl->value, '/mod_linkmgr/file/')) {                 
+            $linkurl = $DB->get_record_select('linkset_link_data', 'linkid = '.$value->id.' AND name = \'linkurl\'');
+            //if linkset to an internal moodle file, update contextid and hash else no.
+            if (stristr($linkurl->value, '/mod_linkset/file/')) {                 
                 //get new pathnamehash
-                $pathnamehash = $DB->get_record_select('files', 'contextid = '.$context->id.' AND itemid = '.$linkurl->linkid.' AND component = \'mod_linkmgr\' AND filearea = \'file\' AND mimetype IS NOT NULL', null, 'pathnamehash');
+                $pathnamehash = $DB->get_record_select('files', 'contextid = '.$context->id.' AND itemid = '.$linkurl->linkid.' AND component = \'mod_linkset\' AND filearea = \'file\' AND mimetype IS NOT NULL', null, 'pathnamehash');
                 //get file details
                 $file_details = $fs->get_file_by_hash($pathnamehash->pathnamehash);
                 //overwrite linkvalue
-                $linkurl->value = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkmgr/file/'.$linkurl->linkid.'/'.$file_details->get_filename();
+                $linkurl->value = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$linkurl->linkid.'/'.$file_details->get_filename();
                 //update link data
-                $DB->update_record('linkmgr_link_data', $linkurl);
+                $DB->update_record('linkset_link_data', $linkurl);
             }
             
         }

@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the linkmgr module
+ * This file keeps track of upgrades to the linkset module
  *
  * Sometimes, changes between versions involve alterations to database
  * structures and other major things that may break installations. The upgrade
@@ -25,7 +25,7 @@
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,12 +33,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Execute linkmgr upgrade from the given old version
+ * Execute linkset upgrade from the given old version
  *
  * @param int $oldversion
  * @return bool
  */
-function xmldb_linkmgr_upgrade($oldversion) {
+function xmldb_linkset_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
@@ -56,7 +56,7 @@ function xmldb_linkmgr_upgrade($oldversion) {
     
     if ($oldversion < 2013091301) {
         
-        $table = new xmldb_table('linkmgr');
+        $table = new xmldb_table('linkset');
         $field = new xmldb_field('render', XMLDB_TYPE_CHAR, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 'list', 'name');
 
         // Conditionally launch add field revision
@@ -64,7 +64,7 @@ function xmldb_linkmgr_upgrade($oldversion) {
             $dbman->drop_field($table, $field);
         }
         
-        $table = new xmldb_table('linkmgr');
+        $table = new xmldb_table('linkset');
         $field = new xmldb_field('taborder', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'useastab');
 
         // Conditionally launch add field revision
@@ -73,7 +73,7 @@ function xmldb_linkmgr_upgrade($oldversion) {
         }
         
         
-        $table = new xmldb_table('linkmgr');
+        $table = new xmldb_table('linkset');
         $field = new xmldb_field('useastab', XMLDB_TYPE_INTEGER, '3', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'displayname');
 
         // Conditionally launch add field revision
@@ -81,13 +81,13 @@ function xmldb_linkmgr_upgrade($oldversion) {
             $dbman->drop_field($table, $field);
         }
         
-        upgrade_mod_savepoint(true, 2013091301, 'linkmgr');
+        upgrade_mod_savepoint(true, 2013091301, 'linkset');
         
     }
     
     if ($oldversion < 2013091302) {
                 
-        $table = new xmldb_table('linkmgr');
+        $table = new xmldb_table('linkset');
         $field = new xmldb_field('displayname', XMLDB_TYPE_INTEGER, '3', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'introformat');
 
         // Conditionally launch add field revision
@@ -95,13 +95,13 @@ function xmldb_linkmgr_upgrade($oldversion) {
             $dbman->drop_field($table, $field);
         }
         
-        upgrade_mod_savepoint(true, 2013091302, 'linkmgr');
+        upgrade_mod_savepoint(true, 2013091302, 'linkset');
         
     }
     
     if ($oldversion < 2013091304) {
                 
-        $table = new xmldb_table('linkmgr_links');
+        $table = new xmldb_table('linkset_links');
         $field = new xmldb_field('type', XMLDB_TYPE_CHAR, '20', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'nextid');
 
         // Conditionally launch add field revision
@@ -109,7 +109,7 @@ function xmldb_linkmgr_upgrade($oldversion) {
             $dbman->drop_field($table, $field);
         }
         
-        upgrade_mod_savepoint(true, 2013091304, 'linkmgr');
+        upgrade_mod_savepoint(true, 2013091304, 'linkset');
         
     }
     

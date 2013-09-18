@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkmgr module form
+ * linkset module form
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 /**
  * Module instance settings form
  */
-class mod_linkmgr_mod_form extends moodleform_mod {
+class mod_linkset_mod_form extends moodleform_mod {
 
     /**
      * Defines forms elements
@@ -44,7 +44,7 @@ class mod_linkmgr_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('linkmgrname', 'linkmgr'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('linksetname', 'linkset'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -52,7 +52,7 @@ class mod_linkmgr_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'linkmgrname', 'linkmgr');
+        $mform->addHelpButton('name', 'linksetname', 'linkset');
 
         // Adding the standard "intro" and "introformat" fields
         $this->add_intro_editor();

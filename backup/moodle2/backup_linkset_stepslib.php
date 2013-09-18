@@ -18,53 +18,53 @@
 /**
  * Backup functionality
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class backup_linkmgr_activity_structure_step extends backup_activity_structure_step {
+class backup_linkset_activity_structure_step extends backup_activity_structure_step {
     
     protected function define_structure() {
         
         // Define each element separated
-        $linkmgr = new backup_nested_element('linkmgr', array('id'), array(
+        $linkset = new backup_nested_element('linkset', array('id'), array(
             'name', 'intro', 'introformat', 'timemodified'
         ));
         
-        $links = new backup_nested_element('linkmgr_links');
+        $links = new backup_nested_element('linkset_links');
         
         $link = new backup_nested_element('link', array('id'), array(
-            'linkmgrid', 'previd', 'nextid', 'indent'
+            'linksetid', 'previd', 'nextid', 'indent'
         ));
         
-        $links_data = new backup_nested_element('linkmgr_link_data');
+        $links_data = new backup_nested_element('linkset_link_data');
         
         $link_data = new backup_nested_element('data', array('id'), array(
             'linkid', 'name', 'value'
         ));
         
         // Build the tree
-        $linkmgr->add_child($links);
+        $linkset->add_child($links);
         $links->add_child($link);
  
         $link->add_child($links_data);
         $links_data->add_child($link_data);
 
         // Define sources
-        $linkmgr->set_source_table('linkmgr', array('id' => backup::VAR_ACTIVITYID));
+        $linkset->set_source_table('linkset', array('id' => backup::VAR_ACTIVITYID));
 
-        $link->set_source_table('linkmgr_links', array('linkmgrid' => backup::VAR_PARENTID));
+        $link->set_source_table('linkset_links', array('linksetid' => backup::VAR_PARENTID));
 
         // All the rest of elements only happen if we are including user info
-        $link_data->set_source_table('linkmgr_link_data', array('linkid' => backup::VAR_PARENTID));
+        $link_data->set_source_table('linkset_link_data', array('linkid' => backup::VAR_PARENTID));
         
         // Define file annotations
-        $linkmgr->annotate_files('mod_linkmgr', 'intro', null); // This file area hasn't itemid
-        $link_data->annotate_files('mod_linkmgr', 'file', null);
+        $linkset->annotate_files('mod_linkset', 'intro', null); // This file area hasn't itemid
+        $link_data->annotate_files('mod_linkset', 'file', null);
         
-        // Return the root element (linkmgr), wrapped into standard activity structure
-        return $this->prepare_activity_structure($linkmgr);
+        // Return the root element (linkset), wrapped into standard activity structure
+        return $this->prepare_activity_structure($linkset);
         
     }
 

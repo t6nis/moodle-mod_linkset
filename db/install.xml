@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/linkmgr/db" VERSION="20090123" COMMENT="XMLDB file for linkmgr module"
+<XMLDB PATH="mod/linkset/db" VERSION="20090123" COMMENT="XMLDB file for linkset module"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="linkmgr" COMMENT="linkmgr instances" NEXT="linkmgr_links">
+    <TABLE NAME="linkset" COMMENT="linkset instances" NEXT="linkset_links">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
@@ -15,26 +15,26 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="displayname"/>
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for linkmgr" NEXT="courseid"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for linkset" NEXT="courseid"/>
         <KEY NAME="courseid" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="linkmgr_links" COMMENT="The link items that make up the menu" PREVIOUS="linkmgr" NEXT="linkmgr_link_data">
+    <TABLE NAME="linkset_links" COMMENT="The link items that make up the menu" PREVIOUS="linkset" NEXT="linkset_link_data">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linkmgrid"/>
-        <FIELD NAME="linkmgrid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="linkmgr instance ID" PREVIOUS="id" NEXT="previd"/>
-        <FIELD NAME="previd" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Previous link ID and used for ordering" PREVIOUS="linkmgrid" NEXT="nextid"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linksetid"/>
+        <FIELD NAME="linksetid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="linkset instance ID" PREVIOUS="id" NEXT="previd"/>
+        <FIELD NAME="previd" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Previous link ID and used for ordering" PREVIOUS="linksetid" NEXT="nextid"/>
         <FIELD NAME="nextid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Next link ID and used for ordering" PREVIOUS="previd" NEXT="indent"/>
         <FIELD NAME="indent" SEQUENCE="false" TYPE="int" LENGTH="5" NOTNULL="false" DEFAULT="0" PREVIOUS="nextid" />
       </FIELDS>
       <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linkmgrid"/>
-        <KEY NAME="linkmgrid" TYPE="foreign" FIELDS="linkmgrid" REFTABLE="linkmgr" REFFIELDS="id" PREVIOUS="primary" NEXT="previd"/>
-        <KEY NAME="previd" TYPE="foreign" FIELDS="previd" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="linkmgrid" NEXT="nextid"/>
-        <KEY NAME="nextid" TYPE="foreign" FIELDS="nextid" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="previd"/>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linksetid"/>
+        <KEY NAME="linksetid" TYPE="foreign" FIELDS="linksetid" REFTABLE="linkset" REFFIELDS="id" PREVIOUS="primary" NEXT="previd"/>
+        <KEY NAME="previd" TYPE="foreign" FIELDS="previd" REFTABLE="linkset_links" REFFIELDS="id" PREVIOUS="linksetid" NEXT="nextid"/>
+        <KEY NAME="nextid" TYPE="foreign" FIELDS="nextid" REFTABLE="linkset_links" REFFIELDS="id" PREVIOUS="previd"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="linkmgr_link_data" COMMENT="Holds link properties" PREVIOUS="linkmgr_links">
+    <TABLE NAME="linkset_link_data" COMMENT="Holds link properties" PREVIOUS="linkset_links">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linkid"/>
         <FIELD NAME="linkid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
@@ -43,7 +43,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linkid"/>
-        <KEY NAME="linkid" TYPE="foreign" FIELDS="linkid" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="primary"/>
+        <KEY NAME="linkid" TYPE="foreign" FIELDS="linkid" REFTABLE="linkset_links" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
   </TABLES>

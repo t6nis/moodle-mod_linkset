@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of linkmgr with editing options
+ * Prints a particular instance of linkset with editing options
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,9 +32,9 @@ $linkid     = optional_param('linkid', 0, PARAM_INT);
 $action     = optional_param('action', '', PARAM_ALPHA);
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('linkmgr', $id, 0, false, MUST_EXIST);
+    $cm         = get_coursemodule_from_id('linkset', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $linkmgr  = $DB->get_record('linkmgr', array('id' => $cm->instance), '*', MUST_EXIST);
+    $linkset  = $DB->get_record('linkset', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
@@ -42,31 +42,31 @@ if ($id) {
 require_login($course->id);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 
-add_to_log($course->id, 'linkmgr', 'edit', "edit.php?id={$cm->id}", $linkmgr->name, $cm->id);
+add_to_log($course->id, 'linkset', 'edit', "edit.php?id={$cm->id}", $linkset->name, $cm->id);
 
-require_capability('mod/linkmgr:manage', get_context_instance(CONTEXT_MODULE, $cm->id));
+require_capability('mod/linkset:manage', get_context_instance(CONTEXT_MODULE, $cm->id));
 
 /// Print the page header
-$PAGE->set_title(format_string($linkmgr->name));
+$PAGE->set_title(format_string($linkset->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_cm($cm);
-$PAGE->set_url('/mod/linkmgr/edit.php', array('id' => $id));
+$PAGE->set_url('/mod/linkset/edit.php', array('id' => $id));
 
 //set form data
 $current = new object();
 $current->id = $cm->id;
-$current->linkmgrid = $linkmgr->id;
+$current->linksetid = $linkset->id;
 $current->linkid = $linkid;
 
 $link = null;
 
 if (!empty($action)) {
-    if (linkmgr_handle_edit_action($linkmgr, $action)) {
-        redirect(new moodle_url('/mod/linkmgr/edit.php?id='.$cm->id));
+    if (linkset_handle_edit_action($linkset, $action)) {
+        redirect(new moodle_url('/mod/linkset/edit.php?id='.$cm->id));
     }
     if ($action == 'edit' and $linkid) {
         // We are editing a link
-        if (!$link = $DB->get_records('linkmgr_link_data', array('linkid' => $linkid))) {
+        if (!$link = $DB->get_records('linkset_link_data', array('linkid' => $linkid))) {
             error('Invalid link ID');
         }
         $names = array('linkname', 'linkurl');
@@ -83,14 +83,14 @@ if (!empty($action)) {
 // links of any type or edit a single link of any type
 $attachmentoptions = array('subdirs' => 0, 'maxbytes' => $COURSE->maxbytes, 'maxfiles' => 1, 'accepted_types' => array('*'));
 
-$mform = new mod_linkmgr_edit_form(null, array('current' => $current, 'attachmentoptions' => $attachmentoptions));
+$mform = new mod_linkset_edit_form(null, array('current' => $current, 'attachmentoptions' => $attachmentoptions));
 
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/mod/linkmgr/edit.php?id='.$cm->id));
+    redirect(new moodle_url('/mod/linkset/edit.php?id='.$cm->id));
     die;
 } else if ($data = $mform->get_data()) {
-    linkmgr_save($data);
-    redirect(new moodle_url('/mod/linkmgr/edit.php?id='.$cm->id));
+    linkset_save($data);
+    redirect(new moodle_url('/mod/linkset/edit.php?id='.$cm->id));
     die;
 }
 
@@ -98,18 +98,18 @@ if ($mform->is_cancelled()) {
 echo $OUTPUT->header();
 
 //Intro
-if ($linkmgr->intro) { // Conditions to show the intro can change to look for own settings or whatever
-    $intro = format_module_intro('linkmgr', $linkmgr, $cm->id);
+if ($linkset->intro) { // Conditions to show the intro can change to look for own settings or whatever
+    $intro = format_module_intro('linkset', $linkset, $cm->id);
     echo $OUTPUT->box(format_string($intro));
 }
 
 //Tabs
 $currenttab = 'edit';
-echo linkmgr_tabs($currenttab, $cm->id, $context);
+echo linkset_tabs($currenttab, $cm->id, $context);
 
 //Link tree
 echo $OUTPUT->box_start('boxwidthwide boxaligncenter generalbox');
-echo linkmgr_tree($linkmgr->id, true);
+echo linkset_tree($linkset->id, true);
 echo $OUTPUT->box_end();
 
 // Print the form - remember it has duel purposes

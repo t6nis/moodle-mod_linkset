@@ -20,9 +20,9 @@
  *
  * NOTE: this is an example how to insert log event during installation/update.
  * It is not really essential to know about it, but these logs were created as example
- * in the previous 1.9 linkmgr.
+ * in the previous 1.9 linkset.
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,8 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'linkmgr', 'action'=>'add', 'mtable'=>'linkmgr', 'field'=>'name'),
-    array('module'=>'linkmgr', 'action'=>'update', 'mtable'=>'linkmgr', 'field'=>'name'),
-    array('module'=>'linkmgr', 'action'=>'view', 'mtable'=>'linkmgr', 'field'=>'name'),
-    array('module'=>'linkmgr', 'action'=>'view all', 'mtable'=>'linkmgr', 'field'=>'name')
+    array('module'=>'linkset', 'action'=>'add', 'mtable'=>'linkset', 'field'=>'name'),
+    array('module'=>'linkset', 'action'=>'update', 'mtable'=>'linkset', 'field'=>'name'),
+    array('module'=>'linkset', 'action'=>'view', 'mtable'=>'linkset', 'field'=>'name'),
+    array('module'=>'linkset', 'action'=>'view all', 'mtable'=>'linkset', 'field'=>'name')
 );

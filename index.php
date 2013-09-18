@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkmgr index list
+ * linkset index list
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,19 +32,19 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-add_to_log($course->id, 'linkmgr', 'view all', 'index.php?id='.$course->id, '');
+add_to_log($course->id, 'linkset', 'view all', 'index.php?id='.$course->id, '');
 
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 
-$PAGE->set_url('/mod/linkmgr/index.php', array('id' => $id));
+$PAGE->set_url('/mod/linkset/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-if (! $linkmgrs = get_all_instances_in_course('linkmgr', $course)) {
-    notice(get_string('nolinkmgrs', 'linkmgr'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (! $linksets = get_all_instances_in_course('linkset', $course)) {
+    notice(get_string('nolinksets', 'linkset'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 if ($course->format == 'weeks') {
@@ -58,25 +58,25 @@ if ($course->format == 'weeks') {
     $table->align = array('left', 'left', 'left');
 }
 
-foreach ($linkmgrs as $linkmgr) {
-    if (!$linkmgr->visible) {
+foreach ($linksets as $linkset) {
+    if (!$linkset->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/linkmgr.php', array('id' => $linkmgr->coursemodule)),
-            format_string($linkmgr->name, true),
+            new moodle_url('/mod/linkset.php', array('id' => $linkset->coursemodule)),
+            format_string($linkset->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/linkmgr.php', array('id' => $linkmgr->coursemodule)),
-            format_string($linkmgr->name, true));
+            new moodle_url('/mod/linkset.php', array('id' => $linkset->coursemodule)),
+            format_string($linkset->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($linkmgr->section, $link);
+        $table->data[] = array($linkset->section, $link);
     } else {
         $table->data[] = array($link);
     }
 }
 
-echo $OUTPUT->heading(get_string('modulenameplural', 'linkmgr'), 2);
+echo $OUTPUT->heading(get_string('modulenameplural', 'linkset'), 2);
 echo html_writer::table($table);
 echo $OUTPUT->footer();

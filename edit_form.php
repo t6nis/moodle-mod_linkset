@@ -18,7 +18,7 @@
 /**
  * Editing form
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot.'/mod/linkmgr/locallib.php');
+require_once($CFG->dirroot.'/mod/linkset/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
-class mod_linkmgr_edit_form extends moodleform {
+class mod_linkset_edit_form extends moodleform {
 
     function definition() {
         
@@ -43,23 +43,23 @@ class mod_linkmgr_edit_form extends moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
-        $mform->addElement('hidden', 'linkmgrid');
-        $mform->setType('linkmgrid', PARAM_INT);
+        $mform->addElement('hidden', 'linksetid');
+        $mform->setType('linksetid', PARAM_INT);
 
-        $mform->addElement('text', 'linkname', get_string('linkname', 'linkmgr'), array('size'=>'47'));
+        $mform->addElement('text', 'linkname', get_string('linkname', 'linkset'), array('size'=>'47'));
         $mform->setType('linkname', PARAM_TEXT);
-        $mform->addRule('linkname', get_string('missinglinkname', 'linkmgr'), 'required', null, 'server');
+        $mform->addRule('linkname', get_string('missinglinkname', 'linkset'), 'required', null, 'server');
         
-        $mform->addElement('select', 'urltype', get_string('urltype', 'linkmgr'), array('0' => 'URL', '1' => 'FILE'));
+        $mform->addElement('select', 'urltype', get_string('urltype', 'linkset'), array('0' => 'URL', '1' => 'FILE'));
         
-        $mform->addElement('text', 'linkurl', get_string('linkurl', 'linkmgr'), array('size' => '47')); 
+        $mform->addElement('text', 'linkurl', get_string('linkurl', 'linkset'), array('size' => '47')); 
         $mform->setType('linkurl', PARAM_URL);
         $mform->setDefault('linkurl', 'http://');      
-        $mform->addHelpButton('linkurl', 'linkurl', 'linkmgr');
+        $mform->addHelpButton('linkurl', 'linkurl', 'linkset');
         // Disable my control if a checkbox is checked.
         $mform->disabledIf('linkurl', 'urltype', 'eq', 1);
         
-        $mform->addElement('filepicker', 'fileurl', get_string('fileurl', 'linkmgr'), null, $attachmentoptions);
+        $mform->addElement('filepicker', 'fileurl', get_string('fileurl', 'linkset'), null, $attachmentoptions);
         $mform->disabledIf('fileurl', 'urltype', 'eq', 0);
         
         $mform->addElement('hidden', 'linkid');
@@ -79,7 +79,7 @@ class mod_linkmgr_edit_form extends moodleform {
         $data['linkurl'] = trim(htmlspecialchars($data['linkurl']));
 
         if (!preg_match('/^(http|https|mms):\/\//', $data['linkurl'])) {
-            $errors['linkurl'] = get_string('err_linkurl', 'linkmgr', $needles);
+            $errors['linkurl'] = get_string('err_linkurl', 'linkset', $needles);
         }
  
         return $errors;

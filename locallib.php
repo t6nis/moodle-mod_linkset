@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkmgr locallib functions
+ * linkset locallib functions
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,19 +26,19 @@
 defined('MOODLE_INTERNAL') || die();
 
 //Tabs
-function linkmgr_tabs($currenttab, $cmid, $context) {
+function linkset_tabs($currenttab, $cmid, $context) {
     
     $tabs = array();
 
     //View tab
-    $strlink = get_string('tabview', 'linkmgr');
-    $href = new moodle_url('/mod/linkmgr/view.php', array('id' => $cmid));
+    $strlink = get_string('tabview', 'linkset');
+    $href = new moodle_url('/mod/linkset/view.php', array('id' => $cmid));
     $tabs[]= new tabobject('view', $href, $strlink, $strlink);
     
     //Edit tab
-    if (has_capability('mod/linkmgr:manage', $context)) {
-        $strlink = get_string('tabedit', 'linkmgr');
-        $href = new moodle_url('/mod/linkmgr/edit.php', array('id' => $cmid));
+    if (has_capability('mod/linkset:manage', $context)) {
+        $strlink = get_string('tabedit', 'linkset');
+        $href = new moodle_url('/mod/linkset/edit.php', array('id' => $cmid));
         $tabs[]= new tabobject('edit', $href, $strlink, $strlink);
     }
 
@@ -47,17 +47,17 @@ function linkmgr_tabs($currenttab, $cmid, $context) {
 }
 
 //Link tree
-function linkmgr_tree($linkmgrid, $editing = false) {
+function linkset_tree($linksetid, $editing = false) {
     global $DB;
     
-    $links = $DB->get_records('linkmgr_links', array('linkmgrid' => $linkmgrid));
+    $links = $DB->get_records('linkset_links', array('linksetid' => $linksetid));
     if (!$links) {
         return 'No links';
     }   
 
-    $firstlinkid = linkmgr_get_first_linkid($linkmgrid);
+    $firstlinkid = linkset_get_first_linkid($linksetid);
     
-    $data = linkmgr_get_link_data($links, $firstlinkid);
+    $data = linkset_get_link_data($links, $firstlinkid);
 
     if (!empty($data)) {
         foreach ($data as $link) {
@@ -70,7 +70,7 @@ function linkmgr_tree($linkmgrid, $editing = false) {
             $menuitems[$link[0]->linkid] = $menuitem;
         }
         
-        return menuitems_to_html($menuitems, 0, false, '', $linkmgrid, $editing);
+        return menuitems_to_html($menuitems, 0, false, '', $linksetid, $editing);
     }
 
 }
@@ -84,7 +84,7 @@ function linkmgr_tree($linkmgrid, $editing = false) {
  * @param boolean $yui Add extra HTML and classes to support YUI menu
  * @return string
  **/
-function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $linkmgrid, $editing = false) {
+function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $linksetid, $editing = false) {
 
     global $OUTPUT, $CFG;
     
@@ -97,7 +97,7 @@ function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $
         $moveid     = required_param('linkid', PARAM_INT);
         $alt        = s(get_string('movehere'));
         $movewidget = html_writer::link(
-                        new moodle_url('/mod/linkmgr/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d'),
+                        new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d'),
                         html_writer::tag('img', '', array('src' => $OUTPUT->pix_url('movehere')))
                     );
         $move = true;
@@ -114,17 +114,17 @@ function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $
     $table->data        = array();
     
     if ($move) {
-        $table->head  = array(get_string('movingcancel', 'linkmgr', $CFG->wwwroot.'/mod/linkmgr/edit.php?id='.$cmid));
+        $table->head  = array(get_string('movingcancel', 'linkset', $CFG->wwwroot.'/mod/linkset/edit.php?id='.$cmid));
         $table->wrap  = array('nowrap');
         $table->data[] = array($movewidget);
     } else {
         if (!$editing) {
-            $table->head  = array(get_string('links_header', 'linkmgr'));
+            $table->head  = array(get_string('links_header', 'linkset'));
             $table->align = array('left');
             $table->size  = array('*');
             $table->wrap  = array('nowrap');
         } else {
-            $table->head  = array(get_string('actions', 'linkmgr'), get_string('rendered', 'linkmgr'));
+            $table->head  = array(get_string('actions', 'linkset'), get_string('rendered', 'linkset'));
             $table->align = array('left', 'left', '');
             $table->size  = array('50px', '*', '*');
             $table->wrap  = array('nowrap', 'nowrap', 'nowrap');
@@ -143,7 +143,7 @@ function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $
         if (!$link->exclude) {
             $html = $indent.$item;
         } else {
-            if (has_capability('mod/linkmgr:manage', $context)) {
+            if (has_capability('mod/linkset:manage', $context)) {
                 $html = $indent.$item;
             } else {
                 continue;
@@ -159,22 +159,22 @@ function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $
             $widgets = array();
             if ($editing) {
                 foreach (array('move', 'edit', 'delete', 'left', 'right', ($link->exclude ? 'show' : 'hide')) as $widget) {
-                    $alt = s(get_string($widget, 'linkmgr'));
+                    $alt = s(get_string($widget, 'linkset'));
                         if ($widget == 'right') {
                             $indent = $link->indent+1;
                             $widgets[] = html_writer::link(
-                                            new moodle_url('/mod/linkmgr/edit.php?id='.$cmid.'&amp;indent='.$indent.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
+                                            new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;indent='.$indent.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
                                             $OUTPUT->pix_icon('t/right', $alt)
                                         );
                         } else if ($widget == 'left') {
                             $indent = $link->indent-1;
                             $widgets[] = html_writer::link(
-                                            new moodle_url('/mod/linkmgr/edit.php?id='.$cmid.'&amp;indent='.$indent.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
+                                            new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;indent='.$indent.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
                                             $OUTPUT->pix_icon('t/left', $alt)
                                         );
                         } else {
                             $widgets[] = html_writer::link(
-                                            new moodle_url('/mod/linkmgr/edit.php?id='.$cmid.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
+                                            new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action='.$widget.'&amp;linkid='.$link->id.'&amp;sesskey='.sesskey()),
                                             $OUTPUT->pix_icon('t/'.$widget, $alt)
                                         );
                         }
@@ -233,7 +233,7 @@ function a($menuitem, $yui = false) {
     if (!$menuitem->exclude) {
          return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => $menuitem->class, 'target' => '_blank'));
     } else {
-        if (has_capability('mod/linkmgr:manage', $context)) {
+        if (has_capability('mod/linkset:manage', $context)) {
             return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => $menuitem->class.'_hidden', 'target' => '_blank'));
         } else {
             return false;
@@ -242,43 +242,43 @@ function a($menuitem, $yui = false) {
 }
 
 //Saving link data
-function linkmgr_save($data) {
+function linkset_save($data) {
     
     if (!empty($data->linkid)) {
         $linkid = $data->linkid;
     } else {
-        $linkid = linkmgr_new_link($data->linkmgrid);
+        $linkid = linkset_new_link($data->linksetid);
     }
     
     $names = array('linkname', 'linkurl');
     foreach ($names as $name) {
-        linkmgr_save_data($data, $linkid, $name, $data->$name);
+        linkset_save_data($data, $linkid, $name, $data->$name);
     }
     
 }
 
 //Add new link
-function linkmgr_new_link($linkmgrid) {
+function linkset_new_link($linksetid) {
     global $DB;
     
     $link             = new stdClass;
     $link->previd     = 0;
     $link->nextid     = 0;
-    $link->linkmgrid = $linkmgrid;
+    $link->linksetid = $linksetid;
     
-    if ($lastid = linkmgr_get_last_linkid($link->linkmgrid)) {
+    if ($lastid = linkset_get_last_linkid($link->linksetid)) {
         // Add new one after
         $link->previd = $lastid;
     } else {
         $link->previd = 0; // Just make sure
     }
 
-    if (!$link->id = $DB->insert_record('linkmgr_links', $link)) {
+    if (!$link->id = $DB->insert_record('linkset_links', $link)) {
         error('Failed to insert link');
     }
     // Update the previous link to look to the new link
     if ($link->previd) {
-        if (!$DB->set_field('linkmgr_links', 'nextid', $link->id, array('id' => $link->previd))) {
+        if (!$DB->set_field('linkset_links', 'nextid', $link->id, array('id' => $link->previd))) {
             error('Failed to update link order');
         }
     }
@@ -293,14 +293,14 @@ function linkmgr_new_link($linkmgrid) {
  * @param int $linkid ID of the link to delete
  * @return boolean
  **/
-function linkmgr_delete_link($linkid) {
+function linkset_delete_link($linkid) {
     global $DB;
     
-    linkmgr_remove_link_from_ordering($linkid);
+    linkset_remove_link_from_ordering($linkid);
     
-    $linkmgrid = $DB->get_record('linkmgr_links', array('id' => $linkid));
+    $linksetid = $DB->get_record('linkset_links', array('id' => $linkid));
 
-    if (!$cm = get_coursemodule_from_instance('linkmgr', $linkmgrid->linkmgrid)) {
+    if (!$cm = get_coursemodule_from_instance('linkset', $linksetid->linksetid)) {
         return false;
     }
 
@@ -308,12 +308,12 @@ function linkmgr_delete_link($linkid) {
 
     // now get rid of all files
     $fs = get_file_storage();
-    $fs->delete_area_files($context->id, 'mod_linkmgr', 'file', $linkmgrid->id);
+    $fs->delete_area_files($context->id, 'mod_linkset', 'file', $linksetid->id);
     
-    if (!$DB->delete_records('linkmgr_link_data', array('linkid' => $linkid))) {
+    if (!$DB->delete_records('linkset_link_data', array('linkid' => $linkid))) {
         error('Failed to delete link data');
     }
-    if (!$DB->delete_records('linkmgr_links', array('id' => $linkid))) {
+    if (!$DB->delete_records('linkset_links', array('id' => $linkid))) {
         error('Failed to delete link data');
     }
     return true;
@@ -328,7 +328,7 @@ function linkmgr_delete_link($linkid) {
  * @param boolean $unique Is the name/value combination unique?
  * @return int
  **/
-function linkmgr_save_data($mod_details, $linkid, $name, $value, $unique = false) {
+function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false) {
     global $DB, $CFG;
 
     $fs = get_file_storage();
@@ -353,7 +353,7 @@ function linkmgr_save_data($mod_details, $linkid, $name, $value, $unique = false
     //IF file url is enabled
     if (isset($mod_details->fileurl) && $name == 'linkurl') {
 
-        if (!$cm = get_coursemodule_from_instance('linkmgr', $mod_details->linkmgrid)) {
+        if (!$cm = get_coursemodule_from_instance('linkset', $mod_details->linksetid)) {
             return false;
         }
 
@@ -361,27 +361,27 @@ function linkmgr_save_data($mod_details, $linkid, $name, $value, $unique = false
 
         $draftitemid = file_get_submitted_draft_itemid('fileurl');
 
-        file_prepare_draft_area($draftitemid, $context->id, 'mod_linkmgr', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
+        file_prepare_draft_area($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
 
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_linkmgr', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
+        file_save_draft_area_files($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
 
-        $file = $fs->get_area_files($context->id, 'mod_linkmgr', 'file', $data->linkid, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+        $file = $fs->get_area_files($context->id, 'mod_linkset', 'file', $data->linkid, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
         //getting the filename with extension
         $file_details = $fs->get_file_by_hash(key($file));
 
-        $fullpath = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkmgr/file/'.$data->linkid.'/'.$file_details->get_filename();
+        $fullpath = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$data->linkid.'/'.$file_details->get_filename();
 
         $data->value = $fullpath;
 
     }
 
-    if ($id = $DB->get_field_select('linkmgr_link_data', 'id', $cond, $params)) {
+    if ($id = $DB->get_field_select('linkset_link_data', 'id', $cond, $params)) {
         $data->id = $id;
-        if ($DB->update_record('linkmgr_link_data', $data)) {
+        if ($DB->update_record('linkset_link_data', $data)) {
             $return = $id;
         }
     } else {
-        $return = $DB->insert_record('linkmgr_link_data', $data);
+        $return = $DB->insert_record('linkset_link_data', $data);
     }
 
     return $return;
@@ -390,23 +390,23 @@ function linkmgr_save_data($mod_details, $linkid, $name, $value, $unique = false
 /**
  * Gets the first link ID
  *
- * @param int $linkmgrid ID of a linkmgr instance
+ * @param int $linksetid ID of a linkset instance
  * @return mixed
  **/
-function linkmgr_get_first_linkid($linkmgrid) {
+function linkset_get_first_linkid($linksetid) {
     global $DB;
-    return $DB->get_field('linkmgr_links', 'id', array('linkmgrid' => $linkmgrid, 'previd' => 0));
+    return $DB->get_field('linkset_links', 'id', array('linksetid' => $linksetid, 'previd' => 0));
 }
 
 /**
  * Gets the last link ID
  *
- * @param int $linkmgrid ID of a linkmgr instance
+ * @param int $linksetid ID of a linkset instance
  * @return mixed
  **/
-function linkmgr_get_last_linkid($linkmgrid) {
+function linkset_get_last_linkid($linksetid) {
     global $DB;
-    return $DB->get_field('linkmgr_links', 'id', array('linkmgrid' => $linkmgrid, 'nextid' => 0), IGNORE_MULTIPLE);
+    return $DB->get_field('linkset_links', 'id', array('linksetid' => $linksetid, 'nextid' => 0), IGNORE_MULTIPLE);
 }
 
 /**
@@ -416,7 +416,7 @@ function linkmgr_get_last_linkid($linkmgrid) {
  * @param array $links An array of links with the keys = linkid
  * @return array
  **/
-function linkmgr_get_link_data($links, $firstlinkid) {    
+function linkset_get_link_data($links, $firstlinkid) {    
     global $DB;
     
     $organized = array();
@@ -436,7 +436,7 @@ function linkmgr_get_link_data($links, $firstlinkid) {
 
     foreach ($ordered_links as $key => $value) {    
         
-        if ($data = $DB->get_records_list('linkmgr_link_data', 'linkid', array($key))) {
+        if ($data = $DB->get_records_list('linkset_link_data', 'linkid', array($key))) {
             
             foreach ($data as $datum) {
 
@@ -457,11 +457,11 @@ function linkmgr_get_link_data($links, $firstlinkid) {
 /**
  * Helper function to handle edit actions
  *
- * @param object $linkmgr Page menu instance
+ * @param object $linkset Page menu instance
  * @param string $action Action that is being performed
  * @return boolean If return true, then a redirect will occure (in edit.php at least)
  **/
-function linkmgr_handle_edit_action($linkmgr, $action = NULL) {
+function linkset_handle_edit_action($linkset, $action = NULL) {
     global $CFG;
 
     if (!confirm_sesskey()) {
@@ -481,18 +481,18 @@ function linkmgr_handle_edit_action($linkmgr, $action = NULL) {
             break;
         case 'movehere':
             $after = required_param('after', PARAM_INT);
-            linkmgr_move_link($linkmgr, $linkid, $after);
+            linkset_move_link($linkset, $linkid, $after);
             break;
         case 'delete':
-            linkmgr_delete_link($linkid);
+            linkset_delete_link($linkid);
             break;
         case 'right':
             $indent = required_param('indent', PARAM_INT);
-            linkmgr_indent_link('right', $linkid, $indent);
+            linkset_indent_link('right', $linkid, $indent);
             break;
         case 'left':
             $indent = required_param('indent', PARAM_INT);
-            linkmgr_indent_link('left', $linkid, $indent);
+            linkset_indent_link('left', $linkid, $indent);
             break;
         case 'hide':
             link_show_hide($linkid, 'hide');
@@ -514,20 +514,20 @@ function link_show_hide($linkid, $action) {
     
     if ($action == 'hide') {
 
-        $value = $DB->get_field('linkmgr_link_data', 'value', array('linkid' => $linkid, 'name' => 'linkurl'));
+        $value = $DB->get_field('linkset_link_data', 'value', array('linkid' => $linkid, 'name' => 'linkurl'));
 
         $data         = new stdClass;
         $data->linkid = $linkid;
         $data->name   = 'exclude';
         $data->value  = $value;
 
-        return $DB->insert_record('linkmgr_link_data', $data);
+        return $DB->insert_record('linkset_link_data', $data);
 
     } else if ($action == 'show') {
 
-        $id = $DB->get_field('linkmgr_link_data', 'id', array('linkid' => $linkid, 'name' => 'exclude'));
+        $id = $DB->get_field('linkset_link_data', 'id', array('linkid' => $linkid, 'name' => 'exclude'));
 
-        return $DB->delete_records('linkmgr_link_data', array('id' => $id));
+        return $DB->delete_records('linkset_link_data', array('id' => $id));
         
     } else {
         error('Invalide showhide param');
@@ -537,12 +537,12 @@ function link_show_hide($linkid, $action) {
 }
 
 //Indent link
-function linkmgr_indent_link($lr = '', $linkid, $indent) {
+function linkset_indent_link($lr = '', $linkid, $indent) {
     global $DB;
     
     if ($indent >= 0 and confirm_sesskey()) {
 
-        if (!$link = $DB->get_record("linkmgr_links", array("id" => $linkid))) {
+        if (!$link = $DB->get_record("linkset_links", array("id" => $linkid))) {
             error("This link doesn't exist");
         }
 
@@ -552,7 +552,7 @@ function linkmgr_indent_link($lr = '', $linkid, $indent) {
             $link->indent = 0;
         }
 
-        if (!$DB->set_field("linkmgr_links", "indent", $link->indent, array("id" => $link->id))) {
+        if (!$DB->set_field("linkset_links", "indent", $link->indent, array("id" => $link->id))) {
             error("Could not update the indent level on that link!");
         }
     }
@@ -562,27 +562,27 @@ function linkmgr_indent_link($lr = '', $linkid, $indent) {
 /**
  * Move a link to a new position in the ordering
  *
- * @param object $linkmgr Page menu instance
+ * @param object $linkset Page menu instance
  * @param int $linkid ID of the link we are moving
  * @param int $after ID of the link we are moving our link after (can be 0)
  * @return boolean
  **/
-function linkmgr_move_link($linkmgr, $linkid, $after) {    
+function linkset_move_link($linkset, $linkid, $after) {    
     global $DB;
     
     $link = new stdClass;
     $link->id = $linkid;
 
     // Remove the link from where it was (Critical: this first!)
-    linkmgr_remove_link_from_ordering($link->id);
+    linkset_remove_link_from_ordering($link->id);
 
     if ($after == 0) {
         // Adding to front - get the first link
-        if (!$firstid = linkmgr_get_first_linkid($linkmgr->id)) {
+        if (!$firstid = linkset_get_first_linkid($linkset->id)) {
             error('Could not find first link ID');
         }
         // Point the first link back to our new front link
-        if (!$DB->set_field('linkmgr_links', 'previd', $link->id, array('id' => $firstid))) {
+        if (!$DB->set_field('linkset_links', 'previd', $link->id, array('id' => $firstid))) {
             error('Failed to update link ordering');
         }
         // Set prev/next
@@ -590,16 +590,16 @@ function linkmgr_move_link($linkmgr, $linkid, $after) {
         $link->previd = 0;
     } else {
         // Get the after link
-        if (!$after = $DB->get_record('linkmgr_links', array('id' => $after))) {
+        if (!$after = $DB->get_record('linkset_links', array('id' => $after))) {
             error('Invalid Link ID');
         }
         // Point the after link to our new link
-        if (!$DB->set_field('linkmgr_links', 'nextid', $link->id, array('id' => $after->id))) {
+        if (!$DB->set_field('linkset_links', 'nextid', $link->id, array('id' => $after->id))) {
             error('Failed to update link ordering');
         }
         // Set the next link in the ordering to look back correctly
         if ($after->nextid) {
-            if (!$DB->set_field('linkmgr_links', 'previd', $link->id, array('id' => $after->nextid))) {
+            if (!$DB->set_field('linkset_links', 'previd', $link->id, array('id' => $after->nextid))) {
                 error('Failed to update link ordering');
             }
         }
@@ -608,7 +608,7 @@ function linkmgr_move_link($linkmgr, $linkid, $after) {
         $link->nextid = $after->nextid;
     }
 
-    if (!$DB->update_record('linkmgr_links', $link)) {
+    if (!$DB->update_record('linkset_links', $link)) {
         error('Failed to update link');
     }
 
@@ -621,21 +621,21 @@ function linkmgr_move_link($linkmgr, $linkid, $after) {
  * @param int $linkid ID of the link to remove
  * @return boolean
  **/
-function linkmgr_remove_link_from_ordering($linkid) {    
+function linkset_remove_link_from_ordering($linkid) {    
     global $DB;
     
-    if (!$link = $DB->get_record('linkmgr_links', array('id' => $linkid))) {
+    if (!$link = $DB->get_record('linkset_links', array('id' => $linkid))) {
         error('Invalid Link ID');
     }
     // Point the previous link to the one after this link
     if ($link->previd) {
-        if (!$DB->set_field('linkmgr_links', 'nextid', $link->nextid, array('id' => $link->previd))) {
+        if (!$DB->set_field('linkset_links', 'nextid', $link->nextid, array('id' => $link->previd))) {
             error('Failed to update link ordering');
         }
     }
     // Point the next link to the one before this link
     if ($link->nextid) {
-        if (!$DB->set_field('linkmgr_links', 'previd', $link->previd, array('id' => $link->nextid))) {
+        if (!$DB->set_field('linkset_links', 'previd', $link->previd, array('id' => $link->nextid))) {
             error('Failed to update link ordering');
         }
     }

@@ -16,12 +16,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English strings for linkmgr
+ * English strings for linkset
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_linkmgr
+ * @package    mod_linkset
  * @copyright  2013 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,22 +34,22 @@ $string['edit'] = 'Edit';
 $string['fileurl'] = 'File URL';
 $string['hide'] = 'Hide';
 $string['missinglinkname'] = 'Linkname required';
-$string['modulename'] = 'linkmgr';
-$string['modulenameplural'] = 'linkmgrs';
-$string['modulename_help'] = 'Use the linkmgr module for... | The linkmgr module allows...';
+$string['modulename'] = 'Link set';
+$string['modulenameplural'] = 'Link sets';
+$string['modulename_help'] = 'Link set module is a resource module for Moodle where teacher can create collection or set of links for students. This includes also ability to upload files. Links can be easily reordered, indented and changed.';
 $string['move'] = 'Move';
 $string['movingcancel'] = 'Moving link item (<a href="{$a}">Cancel Move</a>)';
 $string['left'] = 'Left';
 $string['links_header'] = 'Links';
-$string['linkmgrfieldset'] = 'Custom example fieldset';
-$string['linkmgrname'] = 'linkmgr name';
-$string['linkmgrname_help'] = 'This is the content of the help tooltip associated with the linkmgrname field. Markdown syntax is supported.';
-$string['linkmgr'] = 'linkmgr';
+$string['linksetfieldset'] = 'Custom example fieldset';
+$string['linksetname'] = 'Link set name';
+$string['linksetname_help'] = 'This is the content of the help tooltip associated with the linksetname field. Markdown syntax is supported.';
+$string['linkset'] = 'Link set';
 $string['linkname'] = 'Link name';
 $string['linkurl'] = 'Link URL';
 $string['linkurl_help'] = 'Link must begin with http:// !!';
-$string['pluginadministration'] = 'linkmgr administration';
-$string['pluginname'] = 'linkmgr';
+$string['pluginadministration'] = 'Link set administration';
+$string['pluginname'] = 'Link set';
 $string['rendered'] = 'Rendered';
 $string['right'] = 'Right';
 $string['show'] = 'Show';
