@@ -70,7 +70,7 @@ function linkset_tree($linksetid, $editing = false) {
             $menuitems[$link[0]->linkid] = $menuitem;
         }
         
-        return menuitems_to_html($menuitems, 0, false, '', $linksetid, $editing);
+        return menuitems_to_html($menuitems, '', $linksetid, $editing);
     }
 
 }
@@ -80,11 +80,9 @@ function linkset_tree($linksetid, $editing = false) {
  * method will build a list
  *
  * @param array $menuitems An array of menu item objects
- * @param int $depth Current depth for nesting lists
- * @param boolean $yui Add extra HTML and classes to support YUI menu
  * @return string
  **/
-function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $linksetid, $editing = false) {
+function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = false) {
 
     global $OUTPUT, $CFG;
     
@@ -197,7 +195,7 @@ function menuitems_to_html($menuitems, $depth = 0, $yui = false, $indent = '', $
  * @param boolean $yui Add extra HTML and classes to support YUI menu
  * @return string
  **/
-function a($menuitem, $yui = false) {
+function a($menuitem) {
 
     global $COURSE, $CFG;
 
@@ -488,11 +486,11 @@ function linkset_handle_edit_action($linkset, $action = NULL) {
             break;
         case 'right':
             $indent = required_param('indent', PARAM_INT);
-            linkset_indent_link('right', $linkid, $indent);
+            linkset_indent_link($linkid, $indent);
             break;
         case 'left':
             $indent = required_param('indent', PARAM_INT);
-            linkset_indent_link('left', $linkid, $indent);
+            linkset_indent_link($linkid, $indent);
             break;
         case 'hide':
             link_show_hide($linkid, 'hide');
@@ -537,7 +535,7 @@ function link_show_hide($linkid, $action) {
 }
 
 //Indent link
-function linkset_indent_link($lr = '', $linkid, $indent) {
+function linkset_indent_link($linkid, $indent) {
     global $DB;
     
     if ($indent >= 0 and confirm_sesskey()) {
