@@ -223,7 +223,7 @@ function a($menuitem) {
         }
     }
     
-    $title = wordwrap($menuitem->title, 113, '<br />', true);
+    $title = wordwrap($menuitem->title, 97, '<br />', true);
 
     $cmid = optional_param('id', PARAM_INT, PARAM_CLEAN);
     $context = get_context_instance(CONTEXT_MODULE, $cmid);
