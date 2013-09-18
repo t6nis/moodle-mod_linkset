@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/linkmgr/db" VERSION="20090123" COMMENT="XMLDB file for linkmgr module"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="linkmgr" COMMENT="linkmgr instances" NEXT="linkmgr_links">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="true" SEQUENCE="false" UNSIGNED="true" PREVIOUS="name" NEXT="introformat" />
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" SEQUENCE="false" NOTNULL="true" PREVIOUS="intro" NEXT="displayname" />
+        <FIELD NAME="displayname" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Display the module name with the menu" PREVIOUS="introformat" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="displayname"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for linkmgr" NEXT="courseid"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="linkmgr_links" COMMENT="The link items that make up the menu" PREVIOUS="linkmgr" NEXT="linkmgr_link_data">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linkmgrid"/>
+        <FIELD NAME="linkmgrid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="linkmgr instance ID" PREVIOUS="id" NEXT="previd"/>
+        <FIELD NAME="previd" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Previous link ID and used for ordering" PREVIOUS="linkmgrid" NEXT="nextid"/>
+        <FIELD NAME="nextid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Next link ID and used for ordering" PREVIOUS="previd" NEXT="indent"/>
+        <FIELD NAME="indent" SEQUENCE="false" TYPE="int" LENGTH="5" NOTNULL="false" DEFAULT="0" PREVIOUS="nextid" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linkmgrid"/>
+        <KEY NAME="linkmgrid" TYPE="foreign" FIELDS="linkmgrid" REFTABLE="linkmgr" REFFIELDS="id" PREVIOUS="primary" NEXT="previd"/>
+        <KEY NAME="previd" TYPE="foreign" FIELDS="previd" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="linkmgrid" NEXT="nextid"/>
+        <KEY NAME="nextid" TYPE="foreign" FIELDS="nextid" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="previd"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="linkmgr_link_data" COMMENT="Holds link properties" PREVIOUS="linkmgr_links">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linkid"/>
+        <FIELD NAME="linkid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="Name of the link property" PREVIOUS="linkid" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Property value" PREVIOUS="name"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linkid"/>
+        <KEY NAME="linkid" TYPE="foreign" FIELDS="linkid" REFTABLE="linkmgr_links" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
