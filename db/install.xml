@@ -10,9 +10,8 @@
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
         <FIELD NAME="intro" TYPE="text" NOTNULL="true" SEQUENCE="false" UNSIGNED="true" PREVIOUS="name" NEXT="introformat" />
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" SEQUENCE="false" NOTNULL="true" PREVIOUS="intro" NEXT="displayname" />
-        <FIELD NAME="displayname" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Display the module name with the menu" PREVIOUS="introformat" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="displayname"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" SEQUENCE="false" NOTNULL="true" PREVIOUS="intro" NEXT="timemodified" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="introformat"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for linkset" NEXT="courseid"/>
