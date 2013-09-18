@@ -34,11 +34,12 @@ if ($id) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $linkset = $DB->get_record('linkset', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
-    error('You must specify a course_module ID or an instance ID');
+    error('You must specify a course_module ID');
 }
 
 require_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$context = context_module::instance($cm->id);
+require_capability('mod/linkset:view', $context);
 
 add_to_log($course->id, 'linkset', 'view', "view.php?id={$cm->id}", $linkset->name, $cm->id);
 

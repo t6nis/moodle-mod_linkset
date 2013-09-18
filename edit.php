@@ -39,17 +39,15 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
-require_login($course->id);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+require_login($course, true, $cm);
+$context = context_module::instance($cm->id);
+require_capability('mod/linkset:manage', $context);
 
 add_to_log($course->id, 'linkset', 'edit', "edit.php?id={$cm->id}", $linkset->name, $cm->id);
-
-require_capability('mod/linkset:manage', get_context_instance(CONTEXT_MODULE, $cm->id));
 
 /// Print the page header
 $PAGE->set_title(format_string($linkset->name));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_cm($cm);
 $PAGE->set_url('/mod/linkset/edit.php', array('id' => $id));
 
 //set form data

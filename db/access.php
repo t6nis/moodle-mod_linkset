@@ -65,19 +65,11 @@ $capabilities = array(
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
             'guest' => CAP_ALLOW,
+            'frontpage' => CAP_ALLOW,
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-
-    'mod/linkset:submit' => array(
-        'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'student' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         )
     ),
 

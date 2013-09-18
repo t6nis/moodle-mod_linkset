@@ -57,4 +57,8 @@ $string['tabview'] = 'View';
 $string['tabedit'] = 'Edit';
 $string['urltype'] = 'Link Type';
 
+$string['linkset:addinstance'] = 'Add Link set instance';
+$string['linkset:view'] = 'View Link set instance';
+$string['linkset:manage'] = 'Manage Link set instance';
+
 $string['err_linkurl'] = 'Unrecognized or malformed url. Allowed: (http,https)';
