@@ -7,10 +7,10 @@ More details to be added later...
 
 This plugin was designed for Moodle version 2.0 and upwards
 
- * BUGS / ISSUES / TODO *
+// BUGS / ISSUES / TODO //
 
 https://github.com/t6nis/moodle-mod_linkset/issues
 
- * HOMEPAGE *
+// HOMEPAGE //
 
 http://github.com/t6nis/moodle-mod_linkset
