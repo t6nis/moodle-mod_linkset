@@ -1,4 +1,4 @@
-<h1>Linkset resource module</h1>
+Linkset resource module
 
 Create and manage collections of links within your Moodle course.
 
