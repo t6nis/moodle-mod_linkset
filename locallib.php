@@ -223,7 +223,7 @@ function a($menuitem) {
         }
     }
     
-    $title = wordwrap($menuitem->title, 97, '<br />', true);
+    $title = wordwrap($menuitem->title, 210, '<br />', true);
 
     $cmid = optional_param('id', PARAM_INT, PARAM_CLEAN);
     $context = get_context_instance(CONTEXT_MODULE, $cmid);
@@ -455,7 +455,7 @@ function linkset_get_link_data($links, $firstlinkid) {
 /**
  * Helper function to handle edit actions
  *
- * @param object $linkset Page menu instance
+ * @param object $linkset instance
  * @param string $action Action that is being performed
  * @return boolean If return true, then a redirect will occure (in edit.php at least)
  **/
@@ -506,7 +506,9 @@ function linkset_handle_edit_action($linkset, $action = NULL) {
     return true;
 }
 
-//Show/hide links
+/*
+ * Show or hide link from students
+ */
 function link_show_hide($linkid, $action) {
     global $DB;
     
@@ -534,7 +536,9 @@ function link_show_hide($linkid, $action) {
 
 }
 
-//Indent link
+/*
+ * Indent link left or right
+ */
 function linkset_indent_link($linkid, $indent) {
     global $DB;
     
@@ -560,7 +564,7 @@ function linkset_indent_link($linkid, $indent) {
 /**
  * Move a link to a new position in the ordering
  *
- * @param object $linkset Page menu instance
+ * @param object $linkset instance
  * @param int $linkid ID of the link we are moving
  * @param int $after ID of the link we are moving our link after (can be 0)
  * @return boolean

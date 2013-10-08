@@ -83,4 +83,3 @@ $capabilities = array(
         )
     ),
 );
-

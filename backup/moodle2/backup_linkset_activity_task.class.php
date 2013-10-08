@@ -52,10 +52,10 @@ class backup_linkset_activity_task extends backup_activity_task {
         $base = preg_quote($CFG->wwwroot,"/");
 
         $search="/(".$base."\/mod\/linkset\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@linksetINDEX*$1@$', $content);
+        $content= preg_replace($search, '$@LINKSETINDEX*$1@$', $content);
  
         $search="/(".$base."\/mod\/linkset\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@linksetVIEWBYID*$1@$', $content);
+        $content= preg_replace($search, '$@LINKSETVIEWBYID*$1@$', $content);
  
         return $content;
     }

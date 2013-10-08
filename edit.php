@@ -32,9 +32,9 @@ $linkid     = optional_param('linkid', 0, PARAM_INT);
 $action     = optional_param('action', '', PARAM_ALPHA);
 
 if ($id) {
-    $cm         = get_coursemodule_from_id('linkset', $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $linkset  = $DB->get_record('linkset', array('id' => $cm->instance), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('linkset', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $linkset = $DB->get_record('linkset', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
     error('You must specify a course_module ID or an instance ID');
 }
