@@ -117,7 +117,7 @@ class restore_linkset_activity_task extends restore_activity_task {
         
         $cm = get_coursemodule_from_instance('linkset', $id);
 
-        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $context = context_module::instance($cm->id);
         
         //get all related links
         $links = $DB->get_records('linkset_links', array('linksetid' => $id), '', 'id');

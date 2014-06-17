@@ -108,7 +108,7 @@ function linkset_delete_instance($id) {
         return false;
     }
 
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
 
     // now get rid of all files
     $fs = get_file_storage();

@@ -88,7 +88,7 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
     
     $action = optional_param('action', '', PARAM_ALPHA);
     $cmid = required_param('id', PARAM_INT);
-    $context = get_context_instance(CONTEXT_MODULE, $cmid);
+    $context = context_module::instance($cmid);
     $html = '';
     
     if ($action == 'move') {
@@ -199,8 +199,8 @@ function a($menuitem) {
 
     global $COURSE, $CFG;
 
-    $menuitem->class .= 'menuitemlabel';
-
+    $menuitem->class = 'menuitemlabel';
+    
     if (stristr($menuitem->url, 'http://') == TRUE) {
         $protocol = 'exists';
         if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
@@ -226,7 +226,7 @@ function a($menuitem) {
     $title = wordwrap($menuitem->title, 210, '<br />', true);
 
     $cmid = optional_param('id', PARAM_INT, PARAM_CLEAN);
-    $context = get_context_instance(CONTEXT_MODULE, $cmid);
+    $context = context_module::instance($cmid);
   
     if (!$menuitem->exclude) {
          return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => $menuitem->class, 'target' => '_blank'));
@@ -302,7 +302,7 @@ function linkset_delete_link($linkid) {
         return false;
     }
 
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
 
     // now get rid of all files
     $fs = get_file_storage();
@@ -355,7 +355,7 @@ function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false
             return false;
         }
 
-        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $context = context_module::instance($cm->id);
 
         $draftitemid = file_get_submitted_draft_itemid('fileurl');
 

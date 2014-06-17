@@ -43,7 +43,7 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/linkset:manage', $context);
 
-add_to_log($course->id, 'linkset', 'edit', "edit.php?id={$cm->id}", $linkset->name, $cm->id);
+//add_to_log($course->id, 'linkset', 'edit', "edit.php?id={$cm->id}", $linkset->name, $cm->id);
 
 /// Print the page header
 $PAGE->set_title(format_string($linkset->name));
