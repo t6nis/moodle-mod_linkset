@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_linkset_upgrade($oldversion) {
     global $DB;
 
-    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
+    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     // And that's all. Please, examine and understand the 3 example blocks above. Also
     // it's interesting to look how other modules are using this script. Remember that
@@ -53,6 +52,5 @@ function xmldb_linkset_upgrade($oldversion) {
     // related, you'll raise the version and add one upgrade block here.
 
     // Final return of upgrade result (true, all went good) to Moodle.
-    
     return true;
 }

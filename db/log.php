@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,8 +31,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'linkset', 'action'=>'add', 'mtable'=>'linkset', 'field'=>'name'),
-    array('module'=>'linkset', 'action'=>'update', 'mtable'=>'linkset', 'field'=>'name'),
-    array('module'=>'linkset', 'action'=>'view', 'mtable'=>'linkset', 'field'=>'name'),
-    array('module'=>'linkset', 'action'=>'view all', 'mtable'=>'linkset', 'field'=>'name')
+    array('module' => 'linkset', 'action' => 'add', 'mtable' => 'linkset', 'field' => 'name'),
+    array('module' => 'linkset', 'action' => 'update', 'mtable' => 'linkset', 'field' => 'name'),
+    array('module' => 'linkset', 'action' => 'view', 'mtable' => 'linkset', 'field' => 'name'),
+    array('module' => 'linkset', 'action' => 'view all', 'mtable' => 'linkset', 'field' => 'name')
 );

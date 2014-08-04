@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/linkset/backup/moodle2/restore_linkset_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/linkset/backup/moodle2/restore_linkset_stepslib.php'); // Because it exists (must).
 
 class restore_linkset_activity_task extends restore_activity_task {
 
@@ -33,7 +32,7 @@ class restore_linkset_activity_task extends restore_activity_task {
      * Define (add) particular settings this activity can have
      */
     protected function define_my_settings() {
-        // No particular settings for this activity
+        // No particular settings for this activity.
     }
 
     /**
@@ -52,7 +51,7 @@ class restore_linkset_activity_task extends restore_activity_task {
 
         $contents[] = new restore_decode_content('linkset', array('intro'), 'linkset');
         $contents[] = new restore_decode_content('linkset_link_data', array('value'));
-        
+
         return $contents;
     }
 
@@ -64,8 +63,8 @@ class restore_linkset_activity_task extends restore_activity_task {
         $rules = array();
 
         $rules[] = new restore_decode_rule('LINKSETINDEX', '/mod/linkset/index.php?id=$1', 'course');
-        $rules[] = new restore_decode_rule('LINKSETVIEWBYID', '/mod/linkset/view.php?id=$1', 'course_module');        
-        
+        $rules[] = new restore_decode_rule('LINKSETVIEWBYID', '/mod/linkset/view.php?id=$1', 'course_module');
+
         return $rules;
 
     }
@@ -103,42 +102,38 @@ class restore_linkset_activity_task extends restore_activity_task {
 
         return $rules;
     }
-    
+
     /*
      * After restore id & hash updates
      */
     public function after_restore() {
-        
+
         global $CFG, $DB;
 
         $id = $this->get_activityid();
-        //init file storage
+        // Init file storage.
         $fs = get_file_storage();
-        
+
         $cm = get_coursemodule_from_instance('linkset', $id);
 
         $context = context_module::instance($cm->id);
-        
-        //get all related links
+
+        // Get all related links.
         $links = $DB->get_records('linkset_links', array('linksetid' => $id), '', 'id');
 
         foreach ($links as $value) {
-  
             $linkurl = $DB->get_record_select('linkset_link_data', 'linkid = '.$value->id.' AND name = \'linkurl\'');
-            //if linkset to an internal moodle file, update contextid and hash else no.
-            if (stristr($linkurl->value, '/mod_linkset/file/')) {                 
-                //get new pathnamehash
+            // If linkset to an internal moodle file, update contextid and hash else no.
+            if (stristr($linkurl->value, '/mod_linkset/file/')) {
+                // Get new pathnamehash.
                 $pathnamehash = $DB->get_record_select('files', 'contextid = '.$context->id.' AND itemid = '.$linkurl->linkid.' AND component = \'mod_linkset\' AND filearea = \'file\' AND mimetype IS NOT NULL', null, 'pathnamehash');
-                //get file details
-                $file_details = $fs->get_file_by_hash($pathnamehash->pathnamehash);
-                //overwrite linkvalue
-                $linkurl->value = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$linkurl->linkid.'/'.$file_details->get_filename();
-                //update link data
+                // Get file details.
+                $filedetails = $fs->get_file_by_hash($pathnamehash->pathnamehash);
+                // Overwrite linkvalue.
+                $linkurl->value = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$linkurl->linkid.'/'.$filedetails->get_filename();
+                // Update link data.
                 $DB->update_record('linkset_link_data', $linkurl);
             }
-            
         }
-        
     }
-    
 }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -69,4 +68,3 @@ class backup_linkset_activity_structure_step extends backup_activity_structure_s
     }
 
 }
-?>
