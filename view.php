@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints a particular instance of linkset
+ * Showing linkset instance.
  *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,8 +39,6 @@ if ($id) {
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/linkset:view', $context);
-
-//add_to_log($course->id, 'linkset', 'view', "view.php?id={$cm->id}", $linkset->name, $cm->id);
 
 /// Print the page header
 $PAGE->set_title(format_string($linkset->name));

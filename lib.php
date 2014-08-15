@@ -15,21 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkset library functions
+ * Linkset library functions.
  *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-////////////////////////////////////////////////////////////////////////////////
-// Moodle core API                                                            //
-////////////////////////////////////////////////////////////////////////////////
-
 /**
- * Returns the information on whether the module supports a feature
+ * Returns the information on whether the module supports a feature.
  *
  * @see plugin_supports() in lib/moodlelib.php
  * @param string $feature FEATURE_xx constant for requested feature
@@ -44,12 +40,15 @@ function linkset_supports($feature) {
         case FEATURE_GRADE_HAS_GRADE:         return false;
         case FEATURE_GRADE_OUTCOMES:          return false;
         case FEATURE_BACKUP_MOODLE2:          return true;
+        case FEATURE_GROUPS:                  return false;
+        case FEATURE_GROUPINGS:               return false;
+        case FEATURE_GROUPMEMBERSONLY:        return false;
         default: return null;
     }
 }
 
 /**
- * Saves a new instance of the linkset into the database
+ * Saves a new instance of the linkset into the database.
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
@@ -69,7 +68,7 @@ function linkset_add_instance(stdClass $linkset, mod_linkset_mod_form $mform = n
 }
 
 /**
- * Updates an instance of the linkset in the database
+ * Updates an instance of the linkset in the database.
  *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
@@ -103,16 +102,6 @@ function linkset_delete_instance($id) {
     
     $result = true;
 
-    if (!$cm = get_coursemodule_from_instance('linkset', $id)) {
-        return false;
-    }
-
-    $context = context_module::instance($cm->id);
-
-    // now get rid of all files
-    $fs = get_file_storage();
-    $fs->delete_area_files($context->id);
-
     if ($links = $DB->get_records('linkset_links', array('linksetid' => $id), '', 'id')) {
         $linkids = implode(',', array_keys($links));
 
@@ -122,6 +111,7 @@ function linkset_delete_instance($id) {
             $result = $DB->delete_records('linkset_links', array('linksetid' => $id));
         }
     }
+    
     if ($result) {
         $result = $DB->delete_records('linkset', array('id' => $id));
     }
@@ -139,7 +129,7 @@ function linkset_delete_instance($id) {
  * @return stdClass|null
  */
 function linkset_user_outline($course, $user, $mod, $linkset) {
-    return false;
+    return null;
 }
 
 /**
@@ -164,7 +154,7 @@ function linkset_user_complete($course, $user, $mod, $linkset) {
  * @return boolean
  */
 function linkset_print_recent_activity($course, $viewfullnames, $timestart) {
-    return false;  //  True if anything was printed, otherwise false
+    return false;
 }
 
 /**
@@ -297,9 +287,6 @@ function linkset_get_file_areas($course, $cm, $context) {
 /**
  * File browsing support for linkset file areas
  *
- * @package mod_linkset
- * @category files
- *
  * @param file_browser $browser
  * @param array $areas
  * @param stdClass $course
@@ -315,7 +302,6 @@ function linkset_get_file_info($browser, $areas, $course, $cm, $context, $filear
     global $CFG;
 
     if (!has_capability('moodle/course:managefiles', $context)) {
-        // students can not peek here!
         return null;
     }
 
@@ -331,7 +317,6 @@ function linkset_get_file_info($browser, $areas, $course, $cm, $context, $filear
             if ($filepath === '/' and $filename === '.') {
                 $storedfile = new virtual_root_file($context->id, 'mod_linkset', $filearea, 0);
             } else {
-                // not found
                 return null;
             }
         }
@@ -345,10 +330,7 @@ function linkset_get_file_info($browser, $areas, $course, $cm, $context, $filear
 }
 
 /**
- * Serves the files from the linkset file areas
- *
- * @package mod_linkset
- * @category files
+ * Serves the files from the linkset file areas.
  *
  * @param stdClass $course the course object
  * @param stdClass $cm the course module object

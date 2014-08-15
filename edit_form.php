@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Editing form
+ * Editing form.
  *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -80,7 +80,7 @@ class mod_linkset_edit_form extends moodleform {
         if (!preg_match('/^(http|https|mms):\/\//', $data['linkurl'])) {
             $errors['linkurl'] = get_string('err_linkurl', 'linkset', $needles);
         }
- 
+        
         return $errors;
     }
 }

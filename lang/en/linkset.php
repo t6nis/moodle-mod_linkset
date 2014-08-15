@@ -15,21 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * English strings for linkset
+ * English strings for linkset.
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['linkset:addinstance'] = 'Add Link set instance';
+$string['linkset:view'] = 'View Link set instance';
+$string['linkset:manage'] = 'Manage Link set instance';
+
 $string['actions'] = 'Actions';
 $string['delete'] = 'Delete';
 $string['edit'] = 'Edit';
+$string['err_linkurl'] = 'Unrecognized or malformed url. Allowed: (http,https)';
 $string['fileurl'] = 'File URL';
 $string['hide'] = 'Hide';
 $string['missinglinkname'] = 'Linkname required';
@@ -55,9 +60,3 @@ $string['show'] = 'Show';
 $string['tabview'] = 'View';
 $string['tabedit'] = 'Edit';
 $string['urltype'] = 'Link Type';
-
-$string['linkset:addinstance'] = 'Add Link set instance';
-$string['linkset:view'] = 'View Link set instance';
-$string['linkset:manage'] = 'Manage Link set instance';
-
-$string['err_linkurl'] = 'Unrecognized or malformed url. Allowed: (http,https)';

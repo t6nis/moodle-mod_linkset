@@ -17,37 +17,14 @@
 /**
  * Capability definitions for the linkset module
  *
- * The capabilities are loaded into the database table when the module is
- * installed or updated. Whenever the capability definitions are updated,
- * the module version number should be bumped up.
- *
- * The system has four possible values for a capability:
- * CAP_ALLOW, CAP_PREVENT, CAP_PROHIBIT, and inherit (not set).
- *
- * It is important that capability names are unique. The naming convention
- * for capabilities that are specific to modules and blocks is as follows:
- *   [mod/block]/<plugin_name>:<capabilityname>
- *
- * component_name should be the same as the directory name of the mod or block.
- *
- * Core moodle capabilities are defined thus:
- *    moodle/<capabilityclass>:<capabilityname>
- *
- * Examples: mod/forum:viewpost
- *           block/recent_activity:view
- *           moodle/site:deleteuser
- *
- * The variable name for the capability definitions array is $capabilities
- *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
     'mod/linkset:addinstance' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
@@ -58,7 +35,6 @@ $capabilities = array(
         ),
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
-
     'mod/linkset:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -71,7 +47,6 @@ $capabilities = array(
             'manager' => CAP_ALLOW,
         )
     ),
-
     'mod/linkset:manage' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,

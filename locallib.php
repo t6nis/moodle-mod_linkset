@@ -15,16 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * linkset locallib functions
+ * Linkset locallib functions.
  *
  * @package    mod_linkset
- * @copyright  2013 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-//Tabs
+/**
+ * Show View/Edit tabs.
+ * 
+ * @param type $currenttab
+ * @param type $cmid
+ * @param type $context
+ */
 function linkset_tabs($currenttab, $cmid, $context) {
     
     $tabs = array();
@@ -42,10 +48,16 @@ function linkset_tabs($currenttab, $cmid, $context) {
     }
 
     print_tabs(array($tabs), $currenttab);
-    
 }
 
-//Link tree
+/**
+ * Showing the link tree.
+ * 
+ * @global type $DB
+ * @param type $linksetid
+ * @param type $editing
+ * @return string
+ */
 function linkset_tree($linksetid, $editing = false) {
     global $DB;
     
@@ -67,16 +79,13 @@ function linkset_tree($linksetid, $editing = false) {
             $menuitem->indent = $links[$link[0]->linkid]->indent;
             $menuitem->exclude = (isset($link[2]->name) == 'exclude' ? true : false);
             $menuitems[$link[0]->linkid] = $menuitem;
-        }
-        
+        }        
         return menuitems_to_html($menuitems, '', $linksetid, $editing);
     }
-
 }
 
 /**
- * Given an array of menu item object, this
- * method will build a list
+ * Given an array of menu item object, this method will build a list.
  *
  * @param array $menuitems An array of menu item objects
  * @return string
@@ -112,19 +121,16 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
     
     if ($move) {
         $table->head  = array(get_string('movingcancel', 'linkset', $CFG->wwwroot.'/mod/linkset/edit.php?id='.$cmid));
-        $table->wrap  = array('nowrap');
         $table->data[] = array($movewidget);
     } else {
         if (!$editing) {
             $table->head  = array(get_string('links_header', 'linkset'));
             $table->align = array('left');
             $table->size  = array('*');
-            $table->wrap  = array('nowrap');
         } else {
             $table->head  = array(get_string('actions', 'linkset'), get_string('rendered', 'linkset'));
             $table->align = array('left', 'left', '');
-            $table->size  = array('50px', '*', '*');
-            $table->wrap  = array('nowrap', 'nowrap', 'nowrap');
+            $table->size  = array('95px', '*', '*');
         }
     } 
         
@@ -188,7 +194,7 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
 
 
 /**
- * Build a link tag from a menu item
+ * Build a link tag from a menu item.
  *
  * @param object $menuitem Menu item object
  * @param boolean $yui Add extra HTML and classes to support YUI menu
@@ -238,7 +244,11 @@ function a($menuitem) {
     }
 }
 
-//Saving link data
+/**
+ * Saving link data.
+ * 
+ * @param type $data
+ */
 function linkset_save($data) {
     
     if (!empty($data->linkid)) {
@@ -250,11 +260,16 @@ function linkset_save($data) {
     $names = array('linkname', 'linkurl');
     foreach ($names as $name) {
         linkset_save_data($data, $linkid, $name, $data->$name);
-    }
-    
+    }    
 }
 
-//Add new link
+/**
+ * Saving a new link.
+ * 
+ * @global type $DB
+ * @param type $linksetid
+ * @return type
+ */
 function linkset_new_link($linksetid) {
     global $DB;
     
@@ -266,8 +281,6 @@ function linkset_new_link($linksetid) {
     if ($lastid = linkset_get_last_linkid($link->linksetid)) {
         // Add new one after
         $link->previd = $lastid;
-    } else {
-        $link->previd = 0; // Just make sure
     }
 
     if (!$link->id = $DB->insert_record('linkset_links', $link)) {
@@ -284,12 +297,11 @@ function linkset_new_link($linksetid) {
 }
 
 /**
- * Deletes a link and all associated data
- * Also maintains ordering
+ * Deletes a link and all associated data also maintains ordering.
  *
  * @param int $linkid ID of the link to delete
  * @return boolean
- **/
+ */
 function linkset_delete_link($linkid) {
     global $DB;
     
@@ -313,6 +325,7 @@ function linkset_delete_link($linkid) {
     if (!$DB->delete_records('linkset_links', array('id' => $linkid))) {
         error('Failed to delete link data');
     }
+    
     return true;
 }
 
@@ -324,7 +337,7 @@ function linkset_delete_link($linkid) {
  * @param mixed $value Value of the data
  * @param boolean $unique Is the name/value combination unique?
  * @return int
- **/
+ */
 function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false) {
     global $DB, $CFG;
 
@@ -369,7 +382,6 @@ function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false
         $fullpath = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$data->linkid.'/'.$file_details->get_filename();
 
         $data->value = $fullpath;
-
     }
 
     if ($id = $DB->get_field_select('linkset_link_data', 'id', $cond, $params)) {
@@ -385,34 +397,33 @@ function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false
 }
 
 /**
- * Gets the first link ID
+ * Gets the first link ID.
  *
  * @param int $linksetid ID of a linkset instance
  * @return mixed
- **/
+ */
 function linkset_get_first_linkid($linksetid) {
     global $DB;
     return $DB->get_field('linkset_links', 'id', array('linksetid' => $linksetid, 'previd' => 0));
 }
 
 /**
- * Gets the last link ID
+ * Gets the last link ID.
  *
  * @param int $linksetid ID of a linkset instance
  * @return mixed
- **/
+ */
 function linkset_get_last_linkid($linksetid) {
     global $DB;
     return $DB->get_field('linkset_links', 'id', array('linksetid' => $linksetid, 'nextid' => 0), IGNORE_MULTIPLE);
 }
 
 /**
- * Gets link data for all passed links and organizes the records
- * in an array keyed on the linkid.
+ * Gets link data for all passed links and organizes the records in an array keyed on the linkid.
  *
  * @param array $links An array of links with the keys = linkid
  * @return array
- **/
+ */
 function linkset_get_link_data($links, $firstlinkid) {    
     global $DB;
     
@@ -431,20 +442,15 @@ function linkset_get_link_data($links, $firstlinkid) {
 
     }
 
-    foreach ($ordered_links as $key => $value) {    
-        
-        if ($data = $DB->get_records_list('linkset_link_data', 'linkid', array($key))) {
-            
+    foreach ($ordered_links as $key => $value) {
+        if ($data = $DB->get_records_list('linkset_link_data', 'linkid', array($key))) {            
             foreach ($data as $datum) {
-
                 if (!array_key_exists($datum->linkid, $organized)) {
                     $organized[$datum->linkid] = array();
                 }
-
                 $organized[$datum->linkid][] = $datum;
             }
         }
-        
     }
 
     return $organized;
@@ -452,12 +458,12 @@ function linkset_get_link_data($links, $firstlinkid) {
 
 
 /**
- * Helper function to handle edit actions
+ * Helper function to handle edit actions.
  *
  * @param object $linkset instance
  * @param string $action Action that is being performed
  * @return boolean If return true, then a redirect will occure (in edit.php at least)
- **/
+ */
 function linkset_handle_edit_action($linkset, $action = NULL) {
     global $CFG;
 
@@ -505,8 +511,13 @@ function linkset_handle_edit_action($linkset, $action = NULL) {
     return true;
 }
 
-/*
- * Show or hide link from students
+/**
+ * Defines if link is visible or not.
+ * 
+ * @global type $DB
+ * @param type $linkid
+ * @param type $action
+ * @return boolean
  */
 function link_show_hide($linkid, $action) {
     global $DB;
@@ -523,51 +534,46 @@ function link_show_hide($linkid, $action) {
         return $DB->insert_record('linkset_link_data', $data);
 
     } else if ($action == 'show') {
-
         $id = $DB->get_field('linkset_link_data', 'id', array('linkid' => $linkid, 'name' => 'exclude'));
-
-        return $DB->delete_records('linkset_link_data', array('id' => $id));
-        
+        return $DB->delete_records('linkset_link_data', array('id' => $id));        
     } else {
         error('Invalide showhide param');
         return false;
     }
-
 }
 
-/*
- * Indent link left or right
+/**
+ * Define link indent.
+ * 
+ * @global type $DB
+ * @param type $linkid
+ * @param type $indent
  */
 function linkset_indent_link($linkid, $indent) {
     global $DB;
     
     if ($indent >= 0 and confirm_sesskey()) {
-
         if (!$link = $DB->get_record("linkset_links", array("id" => $linkid))) {
             error("This link doesn't exist");
         }
-
         $link->indent = $indent;
-
         if ($link->indent < 0) {
             $link->indent = 0;
         }
-
         if (!$DB->set_field("linkset_links", "indent", $link->indent, array("id" => $link->id))) {
             error("Could not update the indent level on that link!");
         }
     }
-
 }
 
 /**
- * Move a link to a new position in the ordering
+ * Move a link to a new position in the ordering.
  *
  * @param object $linkset instance
  * @param int $linkid ID of the link we are moving
  * @param int $after ID of the link we are moving our link after (can be 0)
  * @return boolean
- **/
+ */
 function linkset_move_link($linkset, $linkid, $after) {    
     global $DB;
     
@@ -617,11 +623,11 @@ function linkset_move_link($linkset, $linkid, $after) {
 }
 
 /**
- * Removes a link from the link ordering
+ * Removes a link from the link ordering.
  *
  * @param int $linkid ID of the link to remove
  * @return boolean
- **/
+ */
 function linkset_remove_link_from_ordering($linkid) {    
     global $DB;
     

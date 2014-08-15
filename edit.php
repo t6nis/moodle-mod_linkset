@@ -42,8 +42,6 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/linkset:manage', $context);
 
-//add_to_log($course->id, 'linkset', 'edit', "edit.php?id={$cm->id}", $linkset->name, $cm->id);
-
 /// Print the page header
 $PAGE->set_title(format_string($linkset->name));
 $PAGE->set_heading(format_string($course->fullname));
@@ -77,7 +75,6 @@ if (!empty($action)) {
 }
 
 // Create the editing form which has dual purpose - add new 
-// links of any type or edit a single link of any type
 $attachmentoptions = array('subdirs' => 0, 'maxbytes' => $COURSE->maxbytes, 'maxfiles' => 1, 'accepted_types' => array('*'));
 
 $mform = new mod_linkset_edit_form(null, array('current' => $current, 'attachmentoptions' => $attachmentoptions));
