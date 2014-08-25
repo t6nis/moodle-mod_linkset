@@ -27,22 +27,22 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
 /**
- * Module instance settings form
+ * Module instance settings form.
  */
 class mod_linkset_mod_form extends moodleform_mod {
 
     /**
-     * Defines forms elements
+     * Defines forms elements.
      */
     public function definition() {
 
         $mform = $this->_form;
 
         //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
+        // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        // Adding the standard "name" field
+        // Adding the standard "name" field.
         $mform->addElement('text', 'name', get_string('linksetname', 'linkset'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
@@ -53,14 +53,14 @@ class mod_linkset_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'linksetname', 'linkset');
 
-        // Adding the standard "intro" and "introformat" fields
+        // Adding the standard "intro" and "introformat" fields.
         $this->add_intro_editor();
 
         //-------------------------------------------------------------------------------
-        // add standard elements, common to all modules
+        // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
         //-------------------------------------------------------------------------------
-        // add standard buttons, common to all modules
+        // Add standard buttons, common to all modules.
         $this->add_action_buttons();
     }
 }

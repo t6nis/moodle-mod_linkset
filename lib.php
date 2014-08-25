@@ -371,7 +371,7 @@ function linkset_pluginfile($course, $cm, $context, $filearea, array $args, $for
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Extends the global navigation tree by adding linkset nodes if there is a relevant content
+ * Extends the global navigation tree by adding linkset nodes if there is a relevant content.
  *
  * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
  *
@@ -384,7 +384,7 @@ function linkset_extend_navigation(navigation_node $navref, stdclass $course, st
 }
 
 /**
- * Extends the settings navigation with the linkset settings
+ * Extends the settings navigation with the linkset settings.
  *
  * This function is called when the context for the page is a linkset module. This is not called by AJAX
  * so it is safe to rely on the $PAGE.
@@ -396,7 +396,7 @@ function linkset_extend_settings_navigation(settings_navigation $settingsnav, na
 }
 
 /**
- * Return a list of page types
+ * Return a list of page types.
  *
  * @param string $pagetype current page type
  * @param stdClass $parentcontext Block's parent context

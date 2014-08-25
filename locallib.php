@@ -202,42 +202,16 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
  **/
 function a($menuitem) {
 
-    global $COURSE, $CFG;
-
-    $menuitem->class = 'menuitemlabel';
-    
-    if (stristr($menuitem->url, 'http://') == TRUE) {
-        $protocol = 'exists';
-        if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
-        }
-    } else if (stristr($menuitem->url, 'https://') == TRUE) {
-        $protocol = 'exists';
-        if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
-        }
-    } else if (stristr($menuitem->url, 'mms://') == TRUE) {
-        $protocol = 'exists';
-        if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $menuitem->url;
-        }
-    } else {
-        $protocol = 'https';
-        if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
-        }
-    }
-    
     $title = wordwrap($menuitem->title, 210, '<br />', true);
 
     $cmid = optional_param('id', PARAM_INT, PARAM_CLEAN);
     $context = context_module::instance($cmid);
   
     if (!$menuitem->exclude) {
-         return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => $menuitem->class, 'target' => '_blank'));
+         return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => 'menuitemlabel', 'target' => '_blank'));
     } else {
         if (has_capability('mod/linkset:manage', $context)) {
-            return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => $menuitem->class.'_hidden', 'target' => '_blank'));
+            return html_writer::link($menuitem->url, $title, array('title' => $menuitem->title, 'class' => 'menuitemlabel_hidden', 'target' => '_blank'));
         } else {
             return false;
         }
@@ -250,11 +224,12 @@ function a($menuitem) {
  * @param type $data
  */
 function linkset_save($data) {
-    
+
     if (!empty($data->linkid)) {
         $linkid = $data->linkid;
+        linkset_save_link($data, true);
     } else {
-        $linkid = linkset_new_link($data->linksetid);
+        $linkid = linkset_save_link($data);
     }
     
     $names = array('linkname', 'linkurl');
@@ -264,32 +239,39 @@ function linkset_save($data) {
 }
 
 /**
- * Saving a new link.
+ * Saving to linkset_links.
  * 
  * @global type $DB
  * @param type $linksetid
  * @return type
  */
-function linkset_new_link($linksetid) {
+function linkset_save_link($data, $update = false) {
     global $DB;
     
-    $link             = new stdClass;
-    $link->previd     = 0;
-    $link->nextid     = 0;
-    $link->linksetid = $linksetid;
+    $link = new stdClass;
+    $link->linksetid = $data->linksetid;
+    $link->urltype = $data->urltype;
     
-    if ($lastid = linkset_get_last_linkid($link->linksetid)) {
-        // Add new one after
-        $link->previd = $lastid;
-    }
-
-    if (!$link->id = $DB->insert_record('linkset_links', $link)) {
-        error('Failed to insert link');
-    }
-    // Update the previous link to look to the new link
-    if ($link->previd) {
-        if (!$DB->set_field('linkset_links', 'nextid', $link->id, array('id' => $link->previd))) {
-            error('Failed to update link order');
+    if ($update == true && !empty($data->linkid)) {
+        $link->id = $data->linkid;
+        if (!$DB->update_record('linkset_links', $link)) {
+            error('Failed to update link');
+        }
+    } else {
+        $link->previd     = 0;
+        $link->nextid     = 0;
+        if ($lastid = linkset_get_last_linkid($link->linksetid)) {
+            // Add new one after
+            $link->previd = $lastid;
+        }
+        if (!$link->id = $DB->insert_record('linkset_links', $link)) {
+            error('Failed to insert link');
+        }
+        // Update the previous link to look to the new link
+        if ($link->previd) {
+            if (!$DB->set_field('linkset_links', 'nextid', $link->id, array('id' => $link->previd))) {
+                error('Failed to update link order');
+            }
         }
     }
 
@@ -330,7 +312,7 @@ function linkset_delete_link($linkid) {
 }
 
 /**
- * Save a piece of link data
+ * Save a piece of link data.
  *
  * @param int $linkid ID of the link that the data belongs to
  * @param string $name Name of the data
@@ -360,28 +342,26 @@ function linkset_save_data($mod_details, $linkid, $name, $value, $unique = false
     $cond = "linkid = :linkid AND name = :name";
     $params = array('linkid'=>$linkid, 'name' => $name);
 
-    //IF file url is enabled
-    if (isset($mod_details->fileurl) && $name == 'linkurl') {
+    // If file url is enabled.
+    if (isset($mod_details->fileurl_filemanager) && $name == 'linkurl') {
 
         if (!$cm = get_coursemodule_from_instance('linkset', $mod_details->linksetid)) {
             return false;
         }
-
-        $context = context_module::instance($cm->id);
-
-        $draftitemid = file_get_submitted_draft_itemid('fileurl');
-
-        file_prepare_draft_area($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
-
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
-
-        $file = $fs->get_area_files($context->id, 'mod_linkset', 'file', $data->linkid, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
-        //getting the filename with extension
-        $file_details = $fs->get_file_by_hash(key($file));
-
-        $fullpath = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$data->linkid.'/'.$file_details->get_filename();
-
-        $data->value = $fullpath;
+        
+        if ($mod_details->urltype > 1) {
+            $context = context_module::instance($cm->id);       
+            $draftitemid = file_get_submitted_draft_itemid('fileurl_filemanager');
+            file_prepare_draft_area($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
+            file_save_draft_area_files($draftitemid, $context->id, 'mod_linkset', 'file', $data->linkid, array('subdirs'=>true, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>1));
+            $file = $fs->get_area_files($context->id, 'mod_linkset', 'file', $data->linkid, 'sortorder DESC, id ASC', false);
+            // Getting the filename with extension.
+            $file_details = $fs->get_file_by_hash(key($file));
+            $fullpath = $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/mod_linkset/file/'.$data->linkid.'/'.$file_details->get_filename();
+            $data->value = $fullpath;
+        } else {
+            $data->value = $value;
+        }
     }
 
     if ($id = $DB->get_field_select('linkset_link_data', 'id', $cond, $params)) {
@@ -507,7 +487,7 @@ function linkset_handle_edit_action($linkset, $action = NULL) {
             error('Inavlid action: '.$action);
             break;
     }
-
+    
     return true;
 }
 
@@ -530,14 +510,13 @@ function link_show_hide($linkid, $action) {
         $data->linkid = $linkid;
         $data->name   = 'exclude';
         $data->value  = $value;
-
         return $DB->insert_record('linkset_link_data', $data);
-
+        
     } else if ($action == 'show') {
         $id = $DB->get_field('linkset_link_data', 'id', array('linkid' => $linkid, 'name' => 'exclude'));
         return $DB->delete_records('linkset_link_data', array('id' => $id));        
     } else {
-        error('Invalide showhide param');
+        error('Invalid show/hide param');
         return false;
     }
 }
@@ -553,15 +532,15 @@ function linkset_indent_link($linkid, $indent) {
     global $DB;
     
     if ($indent >= 0 and confirm_sesskey()) {
-        if (!$link = $DB->get_record("linkset_links", array("id" => $linkid))) {
-            error("This link doesn't exist");
+        if (!$link = $DB->get_record('linkset_links', array('id' => $linkid))) {
+            error('This link doesn\'t exist');
         }
         $link->indent = $indent;
         if ($link->indent < 0) {
             $link->indent = 0;
         }
-        if (!$DB->set_field("linkset_links", "indent", $link->indent, array("id" => $link->id))) {
-            error("Could not update the indent level on that link!");
+        if (!$DB->set_field('linkset_links', 'indent', $link->indent, array('id' => $link->id))) {
+            error('Could not update the indent level on that link!');
         }
     }
 }

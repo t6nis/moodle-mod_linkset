@@ -15,16 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @see uninstall_plugin()
+ * The mod_linkset course module viewed event.
  *
  * @package    mod_linkset
- * @copyright  2014 Tõnis Tartes
+ * @copyright  2014 Tõnis Tartes <tonis.tartes@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_linkset\event;
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Custom uninstallation procedure.
+ * The mod_linkset course module viewed event class.
+ *
+ * @package    mod_linkset
+ * @since      Moodle 2.7
+ * @copyright  2014 Tõnis Tartes <tonis.tartes@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-function xmldb_linkset_uninstall() {
-    return true;
+class course_module_viewed extends \core\event\course_module_viewed {
+
+    /**
+     * Init method.
+     */
+    protected function init() {
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+        $this->data['objecttable'] = 'linkset';
+    }
 }

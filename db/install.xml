@@ -23,8 +23,9 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="id of the table, please edit me" NEXT="linksetid"/>
         <FIELD NAME="linksetid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="linkset instance ID" PREVIOUS="id" NEXT="previd"/>
         <FIELD NAME="previd" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Previous link ID and used for ordering" PREVIOUS="linksetid" NEXT="nextid"/>
-        <FIELD NAME="nextid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Next link ID and used for ordering" PREVIOUS="previd" NEXT="indent"/>
-        <FIELD NAME="indent" SEQUENCE="false" TYPE="int" LENGTH="5" NOTNULL="false" DEFAULT="0" PREVIOUS="nextid" />
+        <FIELD NAME="nextid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Next link ID and used for ordering" PREVIOUS="previd" NEXT="urltype"/>
+        <FIELD NAME="urltype" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Type of link" PREVIOUS="nextid" NEXT="indent" />
+        <FIELD NAME="indent" SEQUENCE="false" TYPE="int" LENGTH="5" NOTNULL="false" DEFAULT="0" PREVIOUS="urltype" />
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="linksetid"/>

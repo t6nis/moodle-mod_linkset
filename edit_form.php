@@ -38,7 +38,7 @@ class mod_linkset_edit_form extends moodleform {
         
         $attachmentoptions = $this->_customdata['attachmentoptions'];
         $current = $this->_customdata['current'];
-                
+
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
@@ -49,17 +49,17 @@ class mod_linkset_edit_form extends moodleform {
         $mform->setType('linkname', PARAM_TEXT);
         $mform->addRule('linkname', get_string('missinglinkname', 'linkset'), 'required', null, 'server');
         
-        $mform->addElement('select', 'urltype', get_string('urltype', 'linkset'), array('0' => 'URL', '1' => 'FILE'));
+        $mform->addElement('select', 'urltype', get_string('urltype', 'linkset'), array('1' => 'URL', '2' => 'FILE'));
         
         $mform->addElement('text', 'linkurl', get_string('linkurl', 'linkset'), array('size' => '47')); 
         $mform->setType('linkurl', PARAM_URL);
         $mform->setDefault('linkurl', 'http://');      
         $mform->addHelpButton('linkurl', 'linkurl', 'linkset');
         // Disable my control if a checkbox is checked.
-        $mform->disabledIf('linkurl', 'urltype', 'eq', 1);
+        $mform->disabledIf('linkurl', 'urltype', 'eq', 2);
         
-        $mform->addElement('filepicker', 'fileurl', get_string('fileurl', 'linkset'), null, $attachmentoptions);
-        $mform->disabledIf('fileurl', 'urltype', 'eq', 0);
+        $mform->addElement('filemanager', 'fileurl_filemanager', get_string('fileurl', 'linkset'), null, $attachmentoptions);
+        $mform->disabledIf('fileurl_filemanager', 'urltype', 'eq', 1);
         
         $mform->addElement('hidden', 'linkid');
         $mform->setType('linkid', PARAM_INT);
@@ -70,7 +70,7 @@ class mod_linkset_edit_form extends moodleform {
         
     }
     
-    //Validation
+    // Validation.
     function validation($data, $files) {
         $errors = parent::validation($data, $files);
         
@@ -84,5 +84,3 @@ class mod_linkset_edit_form extends moodleform {
         return $errors;
     }
 }
-
-?>

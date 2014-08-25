@@ -34,7 +34,7 @@ class backup_linkset_activity_structure_step extends backup_activity_structure_s
         $links = new backup_nested_element('linkset_links');
         
         $link = new backup_nested_element('link', array('id'), array(
-            'linksetid', 'previd', 'nextid', 'indent'
+            'linksetid', 'previd', 'nextid', 'urltype', 'indent'
         ));
         
         $links_data = new backup_nested_element('linkset_link_data');

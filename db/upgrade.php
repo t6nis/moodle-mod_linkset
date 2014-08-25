@@ -52,5 +52,18 @@ function xmldb_linkset_upgrade($oldversion) {
     // related, you'll raise the version and add one upgrade block here.
 
     // Final return of upgrade result (true, all went good) to Moodle.
+    if ($oldversion < 2014082500) {
+        
+        $table = new xmldb_table('linkset_links');
+
+        // Insert extinfo field into linkset_links.
+        $field = new xmldb_field('urltype', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0', 'nextid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        upgrade_mod_savepoint(true, 2014082500, 'linkset');
+    }
+    
     return true;
 }

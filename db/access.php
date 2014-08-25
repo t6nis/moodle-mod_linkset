@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the linkset module
+ * Capability definitions for the linkset module.
  *
  * @package    mod_linkset
  * @copyright  2014 Tõnis Tartes

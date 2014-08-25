@@ -33,34 +33,45 @@ if ($id) {
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $linkset = $DB->get_record('linkset', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
-    error('You must specify a course_module ID');
+    error('You must specify a course_module ID!');
 }
 
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/linkset:view', $context);
 
-/// Print the page header
+// Trigger events.
+$params = array(
+    'context' => $context,
+    'objectid' => $linkset->id
+);
+$event = \mod_linkset\event\course_module_viewed::create($params);
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('linkset', $linkset);
+$event->trigger();
+
+// Print the page header.
 $PAGE->set_title(format_string($linkset->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_cm($cm);
 $PAGE->set_url('/mod/linkset/view.php', array('id' => $cm->id));
 
-// Output starts here
+// Output starts here.
 echo $OUTPUT->header();
 
-if ($linkset->intro) { // Conditions to show the intro can change to look for own settings or whatever
+if ($linkset->intro) { // Conditions to show the intro can change to look for own settings or whatever.
     echo $OUTPUT->box(format_module_intro('linkset', $linkset, $cm->id), 'generalbox mod_introbox', 'linksetintro');
 }
 
-//Tabs
+// Tabs.
 $currenttab = 'view';
 echo linkset_tabs($currenttab, $cm->id, $context);
 
-//Link tree
+// Link tree.
 echo $OUTPUT->box_start('boxwidthwide boxaligncenter generalbox');
 echo linkset_tree($linkset->id);
 echo $OUTPUT->box_end();
 
-// Finish the page
+// Finish the page.
 echo $OUTPUT->footer();
