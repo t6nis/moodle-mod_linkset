@@ -53,8 +53,7 @@ class mod_linkset_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'linksetname', 'linkset');
 
-        // Adding the standard "intro" and "introformat" fields.
-        $this->add_intro_editor();
+        $this->standard_intro_elements();
 
         //-------------------------------------------------------------------------------
         // Add standard elements, common to all modules.

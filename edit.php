@@ -48,7 +48,7 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_url('/mod/linkset/edit.php', array('id' => $id));
 
 // Set form data.
-$current = new object();
+$current = new stdClass();
 $current->id = $cm->id;
 $current->linksetid = $linkset->id;
 $current->linkid = $linkid;
