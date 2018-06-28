@@ -74,8 +74,8 @@ function linkset_tree($linksetid, $editing = false) {
         foreach ($data as $link) {
             $menuitem = new stdClass();
             $menuitem->id = $link[0]->linkid;
-            $menuitem->title  = format_text($link[0]->value,FORMAT_HTML);
-            $menuitem->url    = $link[1]->value;
+            $menuitem->title  = format_text($link[1]->value,FORMAT_HTML);
+            $menuitem->url    = $link[0]->value;
             $menuitem->indent = $links[$link[0]->linkid]->indent;
             $menuitem->exclude = (isset($link[2]->name) == 'exclude' ? true : false);
             $menuitems[$link[0]->linkid] = $menuitem;
@@ -226,7 +226,6 @@ function a($menuitem) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
     }
-    
     $title = wordwrap($menuitem->title, 210, '<br />', true);
 
     $cmid = optional_param('id', PARAM_INT, PARAM_CLEAN);
@@ -457,7 +456,6 @@ function linkset_get_link_data($links, $firstlinkid) {
             }
         }
     }
-
     return $organized;
 }
 
