@@ -48,13 +48,17 @@ class backup_linkset_activity_task extends backup_activity_task {
     static public function encode_content_links($content) {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot, "/");
+        $base = preg_quote($CFG->wwwroot.'/mod/linkset','#');
 
-        $search = "/(".$base."\/mod\/linkset\/index.php\?id\=)([0-9]+)/";
-        $content = preg_replace($search, '$@LINKSETINDEX*$1@$', $content);
- 
-        $search = "/(".$base."\/mod\/linkset\/view.php\?id\=)([0-9]+)/";
-        $content = preg_replace($search, '$@LINKSETVIEWBYID*$1@$', $content);
+        //Access a list of all links in a course
+        $pattern = '#('.$base.'/index\.php\?id=)([0-9]+)#';
+        $replacement = '$@LINKSETINDEX*$2@$';
+        $content = preg_replace($pattern, $replacement, $content);
+
+        //Access the link supplying a course module id
+        $pattern = '#('.$base.'/view\.php\?id=)([0-9]+)#';
+        $replacement = '$@LINKSETVIEWBYID*$2@$';
+        $content = preg_replace($pattern, $replacement, $content);
  
         return $content;
     }

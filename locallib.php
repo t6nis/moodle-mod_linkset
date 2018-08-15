@@ -78,6 +78,8 @@ function linkset_tree($linksetid, $editing = false) {
                 $menuitem->title  = format_text($link[0]->value,FORMAT_HTML);
             } else if ($link[1]->name == 'linkname') {
                 $menuitem->title  = format_text($link[1]->value,FORMAT_HTML);
+            } else {
+                $menuitem->title  = format_text($link[2]->value,FORMAT_HTML);
             }
             if ($link[0]->name == 'linkurl') {
                 $menuitem->url  = $link[0]->value;
