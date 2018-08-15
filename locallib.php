@@ -205,18 +205,18 @@ function a($menuitem) {
     global $COURSE, $CFG;
     
     // 02.09.2014 - Dont delete this..
-    if (stristr($menuitem->url, 'http://') == TRUE) {
-        $protocol = 'exists';
+    /*if (stristr($menuitem->url, 'http://') == TRUE) {
+        $protocol = 'http';
         if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
     } else if (stristr($menuitem->url, 'https://') == TRUE) {
-        $protocol = 'exists';
+        $protocol = 'https';
         if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
     } else if (stristr($menuitem->url, 'mms://') == TRUE) {
-        $protocol = 'exists';
+        $protocol = 'mms';
         if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
             $menuitem->url = $menuitem->url;
         }
@@ -225,7 +225,7 @@ function a($menuitem) {
         if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
-    }
+    }*/
     
     $title = wordwrap($menuitem->title, 210, '<br />', true);
 
