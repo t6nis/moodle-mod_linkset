@@ -213,29 +213,18 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
 function a($menuitem) {
     
     global $COURSE, $CFG;
-    
     // 02.09.2014 - Dont delete this..
-    /*if (stristr($menuitem->url, 'http://') == TRUE) {
+    if (stristr($menuitem->url, 'http://') == TRUE) {
         $protocol = 'http';
-        if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
+        if (preg_match('@\b'.$protocol.'://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
-    } else if (stristr($menuitem->url, 'https://') == TRUE) {
+    } else {
         $protocol = 'https';
-        if (preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
+        if (!preg_match('@\b'.$protocol.'://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
             $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
         }
-    } else if (stristr($menuitem->url, 'mms://') == TRUE) {
-        $protocol = 'mms';
-        if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $menuitem->url;
-        }
-    } else {*/
-        $protocol = 'https';
-        if (!preg_match('@\b'.$protocol.'://\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
-        }
-    /*}*/
+    }
     
     $title = wordwrap($menuitem->title, 210, '<br />', true);
 
