@@ -215,14 +215,22 @@ function a($menuitem) {
     global $COURSE, $CFG;
     // 02.09.2014 - Dont delete this..
     if (stristr($menuitem->url, 'http://') == TRUE) {
-        $protocol = 'http';
-        if (preg_match('@\b'.$protocol.'://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
+        if (preg_match('@\bhttp://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
+            $menuitem->url = $CFG->wwwroot . '/file.php/' . $COURSE->id . '/' . $menuitem->url;
+        }
+    } else if (stristr($menuitem->url, 'https://') == TRUE) {
+        if (preg_match('@\bhttps://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
+            if (!preg_match('@\bpluginfile.php\b@i', $menuitem->url)) {
+                $menuitem->url = $CFG->wwwroot . '/file.php/' . $COURSE->id . '/' . $menuitem->url;
+            }
+        } else {
+            if (!preg_match('@\bhttps://\b@i', $menuitem->url)) {
+                $menuitem->url = $CFG->wwwroot . '/file.php/' . $COURSE->id . '/' . $menuitem->url;
+            }
         }
     } else {
-        $protocol = 'https';
-        if (!preg_match('@\b'.$protocol.'://(moodledev.ut|moodle.ut)\b@i', $menuitem->url)) {
-            $menuitem->url = $CFG->wwwroot.'/file.php/'.$COURSE->id.'/'.$menuitem->url;
+        if (!preg_match('@\bhttps://\b@i', $menuitem->url)) {
+            $menuitem->url = $CFG->wwwroot . '/file.php/' . $COURSE->id . '/' . $menuitem->url;
         }
     }
     
