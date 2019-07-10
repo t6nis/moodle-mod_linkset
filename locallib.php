@@ -114,7 +114,7 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
         $alt        = s(get_string('movehere'));
         $movewidget = html_writer::link(
                         new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d'),
-                        html_writer::tag('img', '', array('src' => $OUTPUT->pix_url('movehere')))
+                        html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('movehere')))
                     );
         $move = true;
     } else {
@@ -140,7 +140,7 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
         } else {
             $table->head  = array(get_string('actions', 'linkset'), get_string('rendered', 'linkset'));
             $table->align = array('left', 'left', '');
-            $table->size  = array('95px', '*', '*');
+            $table->size  = array('190px', '*', '*');
         }
     } 
         
