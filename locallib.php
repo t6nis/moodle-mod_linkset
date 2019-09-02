@@ -114,7 +114,7 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
         $alt        = s(get_string('movehere'));
         $movewidget = html_writer::link(
                         new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d'),
-                        html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('movehere')))
+                        html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('movehere', get_string('movehere'))))
                     );
         $move = true;
     } else {
