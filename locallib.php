@@ -110,12 +110,10 @@ function menuitems_to_html($menuitems, $indent = '', $linksetid, $editing = fals
     $html = '';
     
     if ($action == 'move') {
+        $icon = new pix_icon('movehere', get_string('movehere'), null, array('class'=>'movetarget'));
         $moveid     = required_param('linkid', PARAM_INT);
-        $alt        = s(get_string('movehere'));
-        $movewidget = html_writer::link(
-                        new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d'),
-                        html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('movehere', get_string('movehere'))))
-                    );
+        $aurl = new moodle_url('/mod/linkset/edit.php?id='.$cmid.'&amp;action=movehere&amp;linkid='.$moveid.'&amp;sesskey='.sesskey().'&amp;after=%d');
+        $movewidget = $OUTPUT->action_icon($aurl, $icon);
         $move = true;
     } else {
         $move = false;
